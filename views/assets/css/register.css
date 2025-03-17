@@ -1,0 +1,42 @@
+html,
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  background-color: #f8f9fa;
+}
+
+.form-register .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-register {
+  max-width: 330px;
+  padding: 1rem;
+}
+
+.form-register .form-floating input {
+  border-radius: 0;
+}
+
+.form-register .form-floating:nth-of-type(1) input {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.form-register .form-floating:last-of-type input {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.form-floating {
+  margin-bottom: -1px;
+}
+
+button {
+  border-radius: 6px;
+}
+
+
