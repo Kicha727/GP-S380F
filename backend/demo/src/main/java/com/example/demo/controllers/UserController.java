@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.util.Map;
 import com.example.demo.models.User;
 import com.example.demo.models.UserDTO;
 import com.example.demo.repository.UserRepository;
@@ -38,8 +39,89 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
 
-        //  Return only necessary data using UserDTO
-        UserDTO userDTO = new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPhone());
+        UserDTO userDTO = new UserDTO(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getPhone(),
+            user.getProfilePic(),
+            user.getCourse(),
+            user.getAcademicYear(),
+            user.getGender()
+        );
+
         return ResponseEntity.ok(userDTO);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUser(@RequestBody User updatedUser) {
+        User user = userRepository.findById(updatedUser.getId()).orElse(null);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        //  Allow updates for Course Name, Academic Year, and Gender
+        user.setCourse(updatedUser.getCourse());
+        user.setAcademicYear(updatedUser.getAcademicYear());
+        user.setGender(updatedUser.getGender());
+
+        userRepository.save(user);
+
+        UserDTO userDTO = new UserDTO(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getPhone(),
+            user.getProfilePic(),
+            user.getCourse(),
+            user.getAcademicYear(),
+            user.getGender()
+        );
+    
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @PutMapping("/updateProfilePic")
+public ResponseEntity<?> updateProfilePic(@RequestBody Map<String, Object> requestData) {
+    try {
+        Long userId = Long.valueOf(requestData.get("id").toString());
+        String profilePic = (String) requestData.get("profilePic");
+
+        // ✅ Debugging: Print Received Data
+        System.out.println("Received Profile Picture Data for User ID: " + userId);
+        if (profilePic != null && !profilePic.isEmpty()) {
+            System.out.println("Profile Picture Data (Base64): " + profilePic.substring(0, 50) + "...");
+        } else {
+            System.out.println("No Profile Picture Received!");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid profile picture data.");
+        }
+
+        // ✅ Find User in Database
+        User user = userRepository.findById(userId).orElse(null);
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        // ✅ Save Profile Picture to Database
+        user.setProfilePic(profilePic);
+        userRepository.save(user);
+
+        // ✅ Return Updated User Info
+        return ResponseEntity.ok(new UserDTO(
+            user.getId(),
+            user.getName(),
+            user.getEmail(),
+            user.getPhone(),
+            user.getProfilePic(),
+            user.getCourse(),
+            user.getAcademicYear(),
+            user.getGender()
+        ));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while updating the profile picture.");
+        }
     }
 }
