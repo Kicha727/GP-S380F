@@ -16,5 +16,15 @@ public class PageController {
         return "login";  // resolves to /WEB-INF/views/login.jsp
     }
 
+    @GetMapping("/register")
+    public String registerPage() {
+        return "register";  // resolves to /WEB-INF/views/register.jsp
+    }
+
+    @GetMapping("/personal-info")
+    public String personalInfoPage() {
+        return "personal-info"; // maps to /WEB-INF/views/personal-info.jsp
+    }
+
     // Add more mappings as you create pages
 }
