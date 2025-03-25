@@ -59,13 +59,13 @@
                     Remember me
                 </label>
             </div>
-            <a href="teacherLogin.jsp" class="text-decoration-none">Teacher Login</a>
+            <a href="teacherLogin" class="text-decoration-none">Teacher Login</a>
         </div>
 
         <button class="btn btn-primary w-100 py-2 mt-3" type="submit">Sign in</button>
     </form>
 
-    <p class="mt-3 text-center">Don't have an account? <a href="register.jsp">Register here</a></p>
+    <p class="mt-3 text-center">Don't have an account? <a href="register">Register here</a></p>
 </main>
 
 <!-- Bootstrap Bundle JS -->

@@ -137,26 +137,26 @@
 
         if (user) {
             navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link active" href="index.jsp">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="course.jsp">Course Material</a></li>
-                <li class="nav-item"><a class="nav-link" href="poll.jsp">Poll</a></li>
-                <li class="nav-item"><a class="nav-link" href="personal-info.jsp">Personal Info</a></li>
-                <li class="nav-item"><a class="nav-link" href="comments.jsp">Comments</a></li>
+                <li class="nav-item"><a class="nav-link active" href="index">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="course">Course Material</a></li>
+                <li class="nav-item"><a class="nav-link" href="poll">Poll</a></li>
+                <li class="nav-item"><a class="nav-link" href="personal-info">Personal Info</a></li>
+                <li class="nav-item"><a class="nav-link" href="comments ">Comments</a></li>
             `;
             authButton.textContent = "Logout";
             authButton.classList.add("btn-danger");
             authButton.addEventListener("click", function () {
                 localStorage.removeItem("user");
-                window.location.href = "login.jsp";
+                window.location.href = "login";
             });
         } else {
             navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link active" href="index.jsp">Home</a></li>
+                <li class="nav-item"><a class="nav-link active" href="index">Home</a></li>
             `;
             authButton.textContent = "Login";
             authButton.classList.add("btn-success");
             authButton.addEventListener("click", function () {
-                window.location.href = "login.jsp";
+                window.location.href = "login";
             });
         }
     });
