@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -15,9 +16,15 @@
             height: 100%;
         }
 
+        body {
+            padding-top: 4.5rem;
+            background-color: #f5f5f5;
+        }
+
         .form-signin {
             max-width: 330px;
             padding: 1rem;
+            margin: 0 auto;
         }
 
         .form-signin .form-floating:focus-within {
@@ -35,73 +42,95 @@
             border-top-left-radius: 0;
             border-top-right-radius: 0;
         }
+        
+        .alert {
+            margin-bottom: 15px;
+        }
+        
+        #authButton {
+            position: relative;
+            z-index: 1050;
+            margin-left: 10px;
+            padding: 6px 12px;
+            font-size: 16px;
+            color: white !important;
+            background-color: #198754 !important;
+            border-color: #198754 !important;
+        }
+        #authButton:hover {
+            background-color: #157347 !important;
+            border-color: #146c43 !important;
+        }
     </style>
 </head>
-<body class="d-flex align-items-center py-4 bg-body-tertiary">
-
-<main class="form-signin w-100 m-auto">
-    <form id="loginForm">
-        <h1 class="h3 mb-3 fw-normal text-center">Please sign in</h1>
-
-        <div class="form-floating">
-            <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required>
-            <label for="floatingEmail">Email address</label>
-        </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
-            <label for="floatingPassword">Password</label>
-        </div>
-
-        <div class="d-flex justify-content-between align-items-center mt-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault">
-                <label class="form-check-label" for="flexCheckDefault">
-                    Remember me
-                </label>
+<body class="text-center">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MUHK</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
+                <ul class="navbar-nav" id="navMenu"></ul>
+                <div class="d-flex align-items-center">
+                    <button id="authButton" class="btn btn-outline-success"></button>
+                </div>
             </div>
-            <a href="teacherLogin" class="text-decoration-none">Teacher Login</a>
         </div>
+    </nav>
 
-        <button class="btn btn-primary w-100 py-2 mt-3" type="submit">Sign in</button>
-    </form>
+    <main class="form-signin w-100 m-auto">
+        <form action="/login" method="post">
+            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+            
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger" role="alert">
+                    ${error}
+                </div>
+            </c:if>
+            
+            <c:if test="${not empty success}">
+                <div class="alert alert-success" role="alert">
+                    ${success}
+                </div>
+            </c:if>
 
-    <p class="mt-3 text-center">Don't have an account? <a href="register">Register here</a></p>
-</main>
+            <div class="form-floating">
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                <label for="email">Email address</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <label for="password">Password</label>
+            </div>
 
-<!-- Bootstrap Bundle JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+            <button class="btn btn-primary w-100 py-2 mt-3" type="submit">Sign in</button>
+            <p class="mt-3">Don't have an account? <a href="/register">Register here</a></p>
+        </form>
+    </main>
 
-<!-- Inline JavaScript from login.js -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("loginForm").addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevent page reload
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navigation and authentication
+        document.addEventListener("DOMContentLoaded", function () {
+            const user = localStorage.getItem("user");
+            const navMenu = document.getElementById("navMenu");
+            const authButton = document.getElementById("authButton");
 
-            const email = document.getElementById("floatingEmail").value;
-            const password = document.getElementById("floatingPassword").value;
-
-            fetch("<%= request.getContextPath() %>/users/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password })
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Invalid email or password.");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    localStorage.setItem("user", JSON.stringify(data));
-                    window.location.href = "<%= request.getContextPath() %>/";
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Login failed. Check your credentials.");
-                });
+            navMenu.innerHTML = `
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
+            `;
+            authButton.textContent = "Login";
+            authButton.classList.add("btn-success");
+            authButton.addEventListener("click", function () {
+                window.location.href = "/login";
+            });
         });
-    });
-</script>
-
+    </script>
 </body>
 </html>

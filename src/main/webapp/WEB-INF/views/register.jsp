@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -11,127 +12,157 @@
 
     <!-- Inline CSS from register.css -->
     <style>
-        html,
-        body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        html, body {
             height: 100%;
-            background-color: #f8f9fa;
         }
 
-        .form-register .form-floating:focus-within {
-            z-index: 2;
+        body {
+            padding-top: 4.5rem;
+            background-color: #f5f5f5;
         }
 
         .form-register {
-            max-width: 330px;
+            max-width: 400px;
             padding: 1rem;
+            margin: 0 auto;
         }
 
-        .form-register .form-floating input {
+        .form-register .form-floating input,
+        .form-register .form-select {
             border-radius: 0;
+            margin-bottom: -1px;
         }
 
-        .form-register .form-floating:nth-of-type(1) input {
+        .form-register .form-floating:first-of-type input {
             border-top-left-radius: 8px;
             border-top-right-radius: 8px;
         }
 
-        .form-register .form-floating:last-of-type input {
+        .form-register .form-floating:last-of-type input,
+        .form-register .form-floating:last-of-type select {
             border-bottom-left-radius: 8px;
             border-bottom-right-radius: 8px;
             margin-bottom: 10px;
         }
 
-        .form-floating {
-            margin-bottom: -1px;
-        }
-
         button {
             border-radius: 6px;
         }
+        
+        .alert {
+            margin-bottom: 15px;
+        }
+        
+        #authButton {
+            position: relative;
+            z-index: 1050;
+            margin-left: 10px;
+            padding: 6px 12px;
+            font-size: 16px;
+            color: white !important;
+            background-color: #198754 !important;
+            border-color: #198754 !important;
+        }
+        #authButton:hover {
+            background-color: #157347 !important;
+            border-color: #146c43 !important;
+        }
     </style>
 </head>
-<body>
-<main>
-    <form id="registerForm" class="form-register w-100 m-auto">
-        <h1 class="h3 mb-3 fw-normal text-center">Create an Account</h1>
-
-        <div class="form-floating">
-            <input type="text" class="form-control" id="floatingName" placeholder="Full Name" required>
-            <label for="floatingName">Full Name</label>
+<body class="text-center">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MUHK</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
+                <ul class="navbar-nav" id="navMenu"></ul>
+                <div class="d-flex align-items-center">
+                    <button id="authButton" class="btn btn-outline-success"></button>
+                </div>
+            </div>
         </div>
-        <div class="form-floating">
-            <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" required>
-            <label for="floatingEmail">Email address</label>
-        </div>
-        <div class="form-floating">
-            <input type="tel" class="form-control" id="floatingPhone" placeholder="Phone Number" required>
-            <label for="floatingPhone">Phone Number</label>
-        </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" id="floatingPassword" placeholder="Password" required>
-            <label for="floatingPassword">Password</label>
-        </div>
-        <div class="form-floating">
-            <input type="password" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password" required>
-            <label for="floatingConfirmPassword">Confirm Password</label>
-        </div>
+    </nav>
 
-        <button class="btn btn-primary w-100 py-2 mt-2" type="submit">Register</button>
+    <main>
+        <form action="/register" method="post" class="form-register w-100 m-auto">
+            <img class="mb-4" src="https://muhk.edu.hk/wp-content/uploads/2022/04/logo_symbol.png" alt="MUHK Logo" width="72" height="57">
+            <h1 class="h3 mb-3 fw-normal">Create an Account</h1>
+            
+            <c:if test="${not empty error}">
+                <div class="alert alert-danger" role="alert">
+                    ${error}
+                </div>
+            </c:if>
 
-        <p class="mt-3 text-center">Already have an account?
-            <a href="<%= request.getContextPath() %>/login">Sign in here</a>
-        </p>
-    </form>
-</main>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="name" name="name" placeholder="Full Name" required>
+                <label for="name">Full Name</label>
+            </div>
+            <div class="form-floating">
+                <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
+                <label for="email">Email address</label>
+            </div>
+            <div class="form-floating">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <label for="password">Password</label>
+            </div>
+            <div class="form-floating">
+                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number" required>
+                <label for="phone">Phone Number</label>
+            </div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="course" name="course" placeholder="Course" required>
+                <label for="course">Course</label>
+            </div>
+            <div class="form-floating">
+                <select class="form-select" id="academicYear" name="academicYear" required>
+                    <option value="">Select Academic Year</option>
+                    <option value="2023-2024">2023-2024</option>
+                    <option value="2024-2025">2024-2025</option>
+                    <option value="2025-2026">2025-2026</option>
+                </select>
+                <label for="academicYear">Academic Year</label>
+            </div>
+            <div class="form-floating">
+                <select class="form-select" id="gender" name="gender" required>
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <label for="gender">Gender</label>
+            </div>
 
-<!-- JavaScript from register.js -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById("registerForm").addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevents page reload
+            <button class="btn btn-primary w-100 py-2 mt-2" type="submit">Register</button>
 
-            const name = document.getElementById("floatingName").value;
-            const email = document.getElementById("floatingEmail").value;
-            const phone = document.getElementById("floatingPhone").value;
-            const password = document.getElementById("floatingPassword").value;
-            const confirmPassword = document.getElementById("floatingConfirmPassword").value;
+            <p class="mt-3">Already have an account? <a href="/login">Sign in here</a></p>
+            <p class="mt-5 mb-3 text-body-secondary">&copy; 2025 MUHK Polling System</p>
+        </form>
+    </main>
 
-            if (password !== confirmPassword) {
-                alert("Passwords do not match! Please enter the same password.");
-                return;
-            }
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Navigation and authentication
+        document.addEventListener("DOMContentLoaded", function () {
+            const navMenu = document.getElementById("navMenu");
+            const authButton = document.getElementById("authButton");
 
-            const userData = {
-                name: name,
-                email: email,
-                phone: phone,
-                password: password
-            };
-
-            fetch("<%= request.getContextPath() %>/users/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(userData)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Failed to register user.");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    alert("User registered successfully!");
-                    window.location.href = "<%= request.getContextPath() %>/login";
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                    alert("Registration failed. Please try again.");
-                });
+            navMenu.innerHTML = `
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
+            `;
+            authButton.textContent = "Login";
+            authButton.classList.add("btn-success");
+            authButton.addEventListener("click", function () {
+                window.location.href = "/login";
+            });
         });
-    });
-</script>
+    </script>
 </body>
 </html>

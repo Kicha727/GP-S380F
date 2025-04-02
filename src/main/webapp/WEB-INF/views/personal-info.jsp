@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +8,7 @@
     <title>Student Profile</title>
 
     <!-- Bootstrap & FontAwesome -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet">
 
     <!-- Embedded profile.css + navbar-fixed.css -->
@@ -62,6 +63,8 @@
             background-color: #0056b3;
         }
         #authButton {
+            position: relative;
+            z-index: 1050;
             margin-left: 10px;
             padding: 6px 12px;
             font-size: 16px;
@@ -81,14 +84,16 @@
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">MUHK</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse"
-                data-target="#navbarCollapse" aria-controls="navbarCollapse"
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
                 aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
             <ul class="navbar-nav" id="navMenu"></ul>
-            <button id="authButton" class="btn btn-outline-success"></button>
+            <div class="d-flex align-items-center">
+                <button id="authButton" class="btn btn-outline-success"></button>
+            </div>
         </div>
     </div>
 </nav>
@@ -145,122 +150,190 @@
 </section>
 
 <!-- JavaScript: Navbar + Profile Logic -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Navbar setup
     document.addEventListener("DOMContentLoaded", function () {
-        const user = JSON.parse(localStorage.getItem("user"));
         const navMenu = document.getElementById("navMenu");
         const authButton = document.getElementById("authButton");
-
-        if (user) {
+        let userData = null;
+        
+        // Check session for user info
+        fetch('/users/current')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Not authenticated');
+                }
+                return response.json();
+            })
+            .then(user => {
+                userData = user;
+                setupUI(userData);
+                loadUserData(userData);
+            })
+            .catch(error => {
+                console.error('Authentication error:', error);
+                
+                // Fallback to localStorage if server check fails
+                const userFromStorage = localStorage.getItem("user");
+                if (userFromStorage) {
+                    userData = JSON.parse(userFromStorage);
+                    setupUI(userData);
+                    loadUserData(userData);
+                } else {
+                    // Redirect if not logged in
+                    alert("You must be logged in to view this page.");
+                    window.location.href = "/login";
+                }
+            });
+            
+        function setupUI(userData) {
             navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/course">Course Material</a></li>
-                <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/poll">Poll</a></li>
-                <li class="nav-item"><a class="nav-link active" href="<%= request.getContextPath() %>/personal-info">Personal Info</a></li>
-                <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/comments">Comments</a></li>
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/course">Course Material</a></li>
+                <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/personal-info">Personal Info</a></li>
+                <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
             `;
             authButton.textContent = "Logout";
             authButton.classList.add("btn-danger");
-            authButton.onclick = () => {
+            authButton.addEventListener("click", function () {
                 localStorage.removeItem("user");
-                window.location.href = "<%= request.getContextPath() %>/login";
-            };
-        } else {
-            navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link" href="<%= request.getContextPath() %>/">Home</a></li>
-            `;
-            authButton.textContent = "Login";
-            authButton.classList.add("btn-success");
-            authButton.onclick = () => {
-                window.location.href = "<%= request.getContextPath() %>/login";
-            };
-        }
-
-        // Personal Info Page Logic
-        if (!user) {
-            alert("You must be logged in to view this page.");
-            window.location.href = "<%= request.getContextPath() %>/login";
-            return;
-        }
-
-        // Populate Fields
-        const setField = (id, val) => document.getElementById(id).value = val || '';
-        setField("studentId", user.id);
-        setField("studentName", user.name);
-        setField("courseName", user.course);
-        setField("academicYear", user.academicYear);
-        setField("gender", user.gender);
-        setField("phone", user.phone);
-        setField("email", user.email);
-        if (user.profilePic?.startsWith("data:image")) {
-            document.getElementById("profilePic").src = user.profilePic;
-        }
-
-        // Edit Button
-        const editBtn = document.getElementById("editInfoBtn");
-        editBtn.addEventListener("click", () => {
-            const editing = editBtn.textContent === "Save";
-            ["courseName", "academicYear", "gender"].forEach(id => {
-                document.getElementById(id).disabled = editing;
+                window.location.href = "/logout";
             });
-            editBtn.textContent = editing ? "Edit" : "Save";
-
-            if (editing) {
-                fetch("<%= request.getContextPath() %>/users/update", {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        id: user.id,
-                        course: document.getElementById("courseName").value,
-                        academicYear: document.getElementById("academicYear").value,
-                        gender: document.getElementById("gender").value
-                    })
+        }
+        
+        function loadUserData(userData) {
+            // Populate Fields
+            document.getElementById("studentId").value = userData.id || '';
+            document.getElementById("studentName").value = userData.name || '';
+            document.getElementById("courseName").value = userData.course || '';
+            document.getElementById("academicYear").value = userData.academicYear || '';
+            document.getElementById("gender").value = userData.gender || '';
+            document.getElementById("phone").value = userData.phone || '';
+            document.getElementById("email").value = userData.email || '';
+            if (userData.profilePic && userData.profilePic.startsWith("data:image")) {
+                document.getElementById("profilePic").src = userData.profilePic;
+            }
+        }
+        
+        // Edit Profile functionality
+        const editInfoBtn = document.getElementById("editInfoBtn");
+        editInfoBtn.addEventListener("click", function() {
+            const courseName = document.getElementById("courseName");
+            const academicYear = document.getElementById("academicYear");
+            const gender = document.getElementById("gender");
+            
+            if (courseName.disabled) {
+                // Enable editing
+                courseName.disabled = false;
+                academicYear.disabled = false;
+                gender.disabled = false;
+                editInfoBtn.textContent = "Save";
+                courseName.focus();
+            } else {
+                // Prepare updated data
+                const updatedData = {
+                    id: document.getElementById("studentId").value,
+                    course: courseName.value,
+                    academicYear: academicYear.value,
+                    gender: gender.value
+                };
+                
+                // Send data to server
+                fetch('/users/update', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
                 })
-                    .then(res => res.json())
-                    .then(data => {
-                        alert("Profile updated!");
-                        localStorage.setItem("user", JSON.stringify(data));
-                        location.reload();
-                    })
-                    .catch(() => alert("Failed to update."));
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update profile');
+                    }
+                    return response.json();
+                })
+                .then(updatedUser => {
+                    // Update local storage with new data
+                    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+                    storedUser.course = updatedUser.course;
+                    storedUser.academicYear = updatedUser.academicYear;
+                    storedUser.gender = updatedUser.gender;
+                    localStorage.setItem("user", JSON.stringify(storedUser));
+                    
+                    // Disable fields
+                    courseName.disabled = true;
+                    academicYear.disabled = true;
+                    gender.disabled = true;
+                    editInfoBtn.textContent = "Edit";
+                    
+                    alert("Your information has been updated!");
+                })
+                .catch(error => {
+                    console.error('Error updating profile:', error);
+                    alert("Failed to update your information. Please try again.");
+                });
             }
         });
-
-        // Upload Picture
-        const fileInput = document.getElementById("profilePicUpload");
-        document.getElementById("uploadPhotoBtn").onclick = () => fileInput.click();
-
-        fileInput.addEventListener("change", event => {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = e => {
-                const base64 = e.target.result;
-                localStorage.setItem("newProfilePic", base64);
-                document.getElementById("profilePic").src = base64;
-            };
-            reader.readAsDataURL(file);
+        
+        // Photo upload functionality
+        const uploadPhotoBtn = document.getElementById("uploadPhotoBtn");
+        const profilePicUpload = document.getElementById("profilePicUpload");
+        const savePhotoBtn = document.getElementById("savePhotoBtn");
+        
+        uploadPhotoBtn.addEventListener("click", function() {
+            profilePicUpload.click();
         });
-
-        // Save Picture
-        document.getElementById("savePhotoBtn").addEventListener("click", () => {
-            const base64 = localStorage.getItem("newProfilePic");
-            if (!base64) return alert("Upload an image first.");
-            fetch("<%= request.getContextPath() %>/users/updateProfilePic", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id: user.id, profilePic: base64 })
-            })
-                .then(res => res.json())
-                .then(data => {
-                    alert("Profile picture updated!");
-                    localStorage.setItem("user", JSON.stringify(data));
+        
+        profilePicUpload.addEventListener("change", function(e) {
+            if (e.target.files && e.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("profilePic").src = e.target.result;
+                }
+                reader.readAsDataURL(profilePicUpload.files[0]);
+            }
+        });
+        
+        savePhotoBtn.addEventListener("click", function() {
+            const profilePicSrc = document.getElementById("profilePic").src;
+            if (profilePicSrc !== "assets/images/default-avatar.png") {
+                // Prepare data to send
+                const photoData = {
+                    id: document.getElementById("studentId").value,
+                    profilePic: profilePicSrc
+                };
+                
+                // Send data to server
+                fetch('/users/updateProfilePic', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(photoData)
                 })
-                .catch(() => alert("Failed to upload image."));
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to update profile picture');
+                    }
+                    return response.json();
+                })
+                .then(updatedUser => {
+                    // Update local storage with new data
+                    const storedUser = JSON.parse(localStorage.getItem("user") || "{}");
+                    storedUser.profilePic = updatedUser.profilePic;
+                    localStorage.setItem("user", JSON.stringify(storedUser));
+                    
+                    alert("Profile picture updated successfully!");
+                })
+                .catch(error => {
+                    console.error('Error updating profile picture:', error);
+                    alert("Failed to update your profile picture. Please try again.");
+                });
+            }
         });
     });
 </script>
-
 </body>
 </html>
