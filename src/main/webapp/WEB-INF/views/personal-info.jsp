@@ -134,7 +134,13 @@
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered">
+
+                            <c:if test="${sessionScope.userId != null && sessionScope.userRole == 'TEACHER'}">
+                            <tr><th>Teacher ID</th><td><input type="text" id="studentId" disabled></td></tr>
+                            </c:if>
+                            <c:if test="${sessionScope.userId != null && sessionScope.userRole == 'STUDENT'}">
                             <tr><th>Student ID</th><td><input type="text" id="studentId" disabled></td></tr>
+                            </c:if>
                             <tr><th>Name</th><td><input type="text" id="studentName" disabled></td></tr>
                             <tr><th>Course Name</th><td><input type="text" id="courseName" disabled></td></tr>
                             <tr><th>Academic Year</th><td><input type="text" id="academicYear" disabled></td></tr>
