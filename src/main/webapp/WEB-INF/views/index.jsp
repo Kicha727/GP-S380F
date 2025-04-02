@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -123,6 +124,41 @@
         <p class="lead">This example illustrates how a fixed-top navbar works. As you scroll, it remains at the top of the browser viewport.</p>
         <a class="btn btn-lg btn-primary" href="https://getbootstrap.com/docs/5.3/components/navbar/" role="button">View Navbar Docs &raquo;</a>
     </div>
+    
+    <!-- Recent Polls Section -->
+    <div class="my-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Recent Polls</h2>
+            <a href="/polls" class="btn btn-outline-primary">View All</a>
+        </div>
+        
+        <c:if test="${recentPolls.isEmpty()}">
+            <div class="alert alert-info">
+                No polls available at the moment.
+            </div>
+        </c:if>
+        
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            <c:forEach items="${recentPolls}" var="poll" begin="0" end="3">
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">${poll.question}</h5>
+                            <p class="card-text text-muted">
+                                ${poll.options.size()} options • 
+                                ${poll.options.stream().map(o -> o.getVoteCount()).sum()} votes
+                            </p>
+                        </div>
+                        <div class="card-footer bg-transparent border-top-0">
+                            <a href="/polls/${poll.id}" class="btn btn-outline-primary stretched-link">
+                                View Poll
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </c:forEach>
+        </div>
+    </div>
 </main>
 
 <!-- Bootstrap Bundle -->
@@ -131,36 +167,42 @@
 <!-- Embedded JavaScript (from navbar.js) -->
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const user = localStorage.getItem("user");
+        const userId = '<%= session.getAttribute("userId") %>';
+        const user = localStorage.getItem("user") || (userId && userId !== 'null');
         const navMenu = document.getElementById("navMenu");
         const authButton = document.getElementById("authButton");
 
         if (user) {
             navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link active" href="index">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="course">Course Material</a></li>
-                <li class="nav-item"><a class="nav-link" href="poll">Poll</a></li>
-                <li class="nav-item"><a class="nav-link" href="personal-info">Personal Info</a></li>
-                <li class="nav-item"><a class="nav-link" href="comments ">Comments</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/course">Course Materials</a></li>
+                <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
+                <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
+                <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
             `;
             authButton.textContent = "Logout";
             authButton.classList.add("btn-danger");
             authButton.addEventListener("click", function () {
                 localStorage.removeItem("user");
-                window.location.href = "login";
+                window.location.href = "/logout";
             });
         } else {
             navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link active" href="index">Home</a></li>
+                <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
             `;
             authButton.textContent = "Login";
             authButton.classList.add("btn-success");
             authButton.addEventListener("click", function () {
-                window.location.href = "login";
+                window.location.href = "/login";
             });
+        }
+
+        if (userId && userId !== 'null' && !localStorage.getItem("user")) {
+            localStorage.setItem("user", "true");
         }
     });
 </script>
+
 
 </body>
 </html>

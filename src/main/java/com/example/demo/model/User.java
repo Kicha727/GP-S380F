@@ -20,6 +20,9 @@ public class User {
     private String course;
     private String academicYear;
     private String gender;
+    
+    @Enumerated(EnumType.STRING)
+    private UserRole role = UserRole.STUDENT;
 
     // Getters and Setters
     public String getName() { return name; }
@@ -48,4 +51,11 @@ public class User {
 
     public String getGender() { return gender; }
     public void setGender(String gender) { this.gender = gender; }
+    
+    public UserRole getRole() { return role; }
+    public void setRole(UserRole role) { this.role = role; }
+    
+    public boolean isTeacher() {
+        return role == UserRole.TEACHER;
+    }
 }
