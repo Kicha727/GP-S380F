@@ -41,6 +41,14 @@ public class PageController {
         model.addAttribute("polls", polls);
         return "polls";  // resolves to /WEB-INF/views/polls.jsp
     }
+    
+    @GetMapping("/comment-page")
+    public String CommentPage(Model model) {
+        List<Poll> polls = pollRepository.findAll();
+        model.addAttribute("comment", comment);
+        return "comment-page";  // resolves to /WEB-INF/views/comment-page.jsp
+    }
 
+    
     // Add more mappings as you create pages
 }
