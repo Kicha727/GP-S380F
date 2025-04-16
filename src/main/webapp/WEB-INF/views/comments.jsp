@@ -1,4 +1,3 @@
-<%-- File: src/main/webapp/WEB-INF/views/comments.jsp --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -76,11 +75,9 @@
             
             <c:if test="${empty comments}">
                 <div class="alert alert-info">
+                    No comments yet. 
                     <sec:authorize access="hasRole('STUDENT')">
-                        No comments yet. Be the first to comment!
-                    </sec:authorize>
-                    <sec:authorize access="hasRole('TEACHER')">
-                        No comments available for this poll.
+                        Be the first to comment!
                     </sec:authorize>
                 </div>
             </c:if>
@@ -96,14 +93,14 @@
                             </span>
                         </div>
                         
-                        <sec:authorize access="hasRole('TEACHER')">
+                        <c:if test="${(isTeacher || currentUser.id == comment.user.id)}">
                             <div class="comment-actions">
                                 <form action="${pageContext.request.contextPath}/comments/delete/${comment.id}" method="post" style="display: inline;">
                                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                                     <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</button>
                                 </form>
                             </div>
-                        </sec:authorize>
+                        </c:if>
                     </div>
                     
                     <div class="comment-content">
