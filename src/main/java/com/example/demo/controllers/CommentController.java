@@ -1,4 +1,3 @@
-// File: src/main/java/com/example/demo/controller/CommentController.java
 package com.example.demo.controller;
 
 import com.example.demo.model.Comment;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/comments")
@@ -45,20 +43,12 @@ public class CommentController {
         
         List<Comment> comments = commentService.getCommentsByPollId(pollId);
         
-        // Filter comments based on user role
         boolean isTeacher = auth.getAuthorities().stream()
             .anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"));
             
-        if (!isTeacher) {
-            // If student, only show their own comments
-            comments = comments.stream()
-                .filter(c -> c.getUser().getId().equals(currentUser.getId()))
-                .collect(Collectors.toList());
-        }
-        
         model.addAttribute("poll", poll);
         model.addAttribute("comments", comments);
-        model.addAttribute("newComment", new Comment());
+        model.addAttribute("currentUser", currentUser);
         model.addAttribute("isTeacher", isTeacher);
         return "comments";
     }
@@ -88,13 +78,26 @@ public class CommentController {
     }
     
     @PostMapping("/delete/{id}")
-    @PreAuthorize("hasRole('TEACHER')")
+    @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER')")
     public String deleteComment(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.findByUsername(auth.getName());
+        
         Comment comment = commentService.getCommentById(id);
         
         if (comment == null) {
             redirectAttributes.addFlashAttribute("error", "Comment not found");
             return "redirect:/polls";
+        }
+        
+        boolean isTeacher = auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"));
+            
+        boolean isAuthor = currentUser.getId().equals(comment.getUser().getId());
+        
+        if (!isTeacher && !isAuthor) {
+            redirectAttributes.addFlashAttribute("error", "You don't have permission to delete this comment");
+            return "redirect:/comments/" + comment.getPoll().getId();
         }
         
         Long pollId = comment.getPoll().getId();
