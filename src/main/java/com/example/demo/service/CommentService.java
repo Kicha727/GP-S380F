@@ -1,4 +1,3 @@
-// File: src/main/java/com/example/demo/service/CommentService.java
 package com.example.demo.service;
 
 import com.example.demo.model.Comment;
