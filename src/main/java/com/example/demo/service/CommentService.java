@@ -1,3 +1,4 @@
+// File: src/main/java/com/example/demo/service/CommentService.java
 package com.example.demo.service;
 
 import com.example.demo.model.Comment;
@@ -31,23 +32,6 @@ public class CommentService {
 
     public Comment getCommentById(Long id) {
         return commentRepository.findById(id).orElse(null);
-    }
-
-    public Comment saveComment(Comment comment) {
-        if (comment.getCreatedAt() == null) {
-            comment.setCreatedAt(LocalDateTime.now());
-        }
-        return commentRepository.save(comment);
-    }
-
-    public Comment updateComment(Long id, String content) {
-        Optional<Comment> optionalComment = commentRepository.findById(id);
-        if (optionalComment.isPresent()) {
-            Comment comment = optionalComment.get();
-            comment.setContent(content);
-            return commentRepository.save(comment);
-        }
-        return null;
     }
 
     public void deleteComment(Long id) {
