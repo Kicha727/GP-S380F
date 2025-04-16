@@ -1,3 +1,4 @@
+// File: src/main/java/com/example/demo/controller/CommentController.java
 package com.example.demo.controller;
 
 import com.example.demo.model.Comment;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/comments")
@@ -33,20 +35,36 @@ public class CommentController {
     @GetMapping("/{pollId}")
     @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER')")
     public String viewComments(@PathVariable Long pollId, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = userService.findByUsername(auth.getName());
+        
         Poll poll = pollService.getPollById(pollId);
         if (poll == null) {
             return "redirect:/polls";
         }
         
         List<Comment> comments = commentService.getCommentsByPollId(pollId);
+        
+        // Filter comments based on user role
+        boolean isTeacher = auth.getAuthorities().stream()
+            .anyMatch(a -> a.getAuthority().equals("ROLE_TEACHER"));
+            
+        if (!isTeacher) {
+            // If student, only show their own comments
+            comments = comments.stream()
+                .filter(c -> c.getUser().getId().equals(currentUser.getId()))
+                .collect(Collectors.toList());
+        }
+        
         model.addAttribute("poll", poll);
         model.addAttribute("comments", comments);
         model.addAttribute("newComment", new Comment());
+        model.addAttribute("isTeacher", isTeacher);
         return "comments";
     }
     
     @PostMapping("/add")
-    @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER')")
+    @PreAuthorize("hasRole('STUDENT')")
     public String addComment(@RequestParam Long pollId, 
                             @RequestParam String content,
                             RedirectAttributes redirectAttributes) {
@@ -54,70 +72,34 @@ public class CommentController {
         User currentUser = userService.findByUsername(auth.getName());
         
         if (currentUser == null) {
-            redirectAttributes.addFlashAttribute("error", "您必須登入才能新增評論");
+            redirectAttributes.addFlashAttribute("error", "You must be logged in to add a comment");
             return "redirect:/comments/" + pollId;
         }
         
         Comment comment = commentService.createComment(pollId, currentUser.getId(), content);
         
         if (comment != null) {
-            redirectAttributes.addFlashAttribute("success", "評論新增成功");
+            redirectAttributes.addFlashAttribute("success", "Comment added successfully");
         } else {
-            redirectAttributes.addFlashAttribute("error", "評論新增失敗");
+            redirectAttributes.addFlashAttribute("error", "Failed to add comment");
         }
         
         return "redirect:/comments/" + pollId;
     }
     
-    @PostMapping("/edit/{id}")
-    @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER')")
-    public String editComment(@PathVariable Long id, 
-                             @RequestParam String content,
-                             RedirectAttributes redirectAttributes) {
-        Comment comment = commentService.getCommentById(id);
-        
-        if (comment == null) {
-            redirectAttributes.addFlashAttribute("error", "找不到評論");
-            return "redirect:/polls";
-        }
-        
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = userService.findByUsername(auth.getName());
-        
-        // 確保只有評論的作者才能編輯評論
-        if (!comment.getUser().getId().equals(currentUser.getId())) {
-            redirectAttributes.addFlashAttribute("error", "您沒有權限編輯此評論");
-            return "redirect:/comments/" + comment.getPoll().getId();
-        }
-        
-        commentService.updateComment(id, content);
-        redirectAttributes.addFlashAttribute("success", "評論編輯成功");
-        
-        return "redirect:/comments/" + comment.getPoll().getId();
-    }
-    
     @PostMapping("/delete/{id}")
-    @PreAuthorize("hasAnyRole('STUDENT', 'TEACHER')")
+    @PreAuthorize("hasRole('TEACHER')")
     public String deleteComment(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Comment comment = commentService.getCommentById(id);
         
         if (comment == null) {
-            redirectAttributes.addFlashAttribute("error", "找不到評論");
+            redirectAttributes.addFlashAttribute("error", "Comment not found");
             return "redirect:/polls";
-        }
-        
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = userService.findByUsername(auth.getName());
-        
-        // 確保只有評論的作者才能刪除評論
-        if (!comment.getUser().getId().equals(currentUser.getId())) {
-            redirectAttributes.addFlashAttribute("error", "您沒有權限刪除此評論");
-            return "redirect:/comments/" + comment.getPoll().getId();
         }
         
         Long pollId = comment.getPoll().getId();
         commentService.deleteComment(id);
-        redirectAttributes.addFlashAttribute("success", "評論刪除成功");
+        redirectAttributes.addFlashAttribute("success", "Comment deleted successfully");
         
         return "redirect:/comments/" + pollId;
     }
