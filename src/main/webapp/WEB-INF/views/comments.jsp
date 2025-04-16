@@ -44,6 +44,23 @@
     </style>
 </head>
 <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MUHK</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
+                <ul class="navbar-nav" id="navMenu"></ul>
+                <div class="d-flex align-items-center">
+                    <button id="authButton" class="btn btn-outline-success"></button>
+                </div>
+            </div>
+        </div>
+    </nav>
     <div class="container mt-4">
         <sec:authorize access="hasAnyRole('STUDENT', 'TEACHER')">
             <h2>Poll：${poll.title}</h2>
