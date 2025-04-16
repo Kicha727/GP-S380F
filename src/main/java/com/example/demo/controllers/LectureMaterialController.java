@@ -1,7 +1,11 @@
 package com.example.demo.controllers;
 
+import com.example.demo.model.LectureComment;
 import com.example.demo.model.LectureMaterial;
+import com.example.demo.model.User;
+import com.example.demo.repository.LectureCommentRepository;
 import com.example.demo.repository.LectureMaterialRepository;
+import com.example.demo.repository.UserRepository;
 import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,11 +31,43 @@ public class LectureMaterialController {
     @Autowired
     private LectureMaterialRepository lecturerepo;
 
-    @GetMapping
+    @Autowired
+    private LectureCommentRepository lectureCommentRepo;
+
+    @Autowired
+    private UserRepository userRepo;
+
+    @GetMapping("/lectures")
     public String lectureMaterial(Model model) {
         List<LectureMaterial> lectureMaterials = lecturerepo.findAll();
         model.addAttribute("lectureMaterials", lectureMaterials);
         return "lecturelist";
+    }
+    @GetMapping("/lecture/{id}")
+    public String viewLectureDetail(@PathVariable Long id, Model model) {
+        LectureMaterial lecture = lecturerepo.findById(id).orElseThrow();
+        List<LectureComment> comments = lectureCommentRepo.findByLectureMaterial(lecture);
+
+        model.addAttribute("lecture", lecture);
+        model.addAttribute("comments", comments);
+        model.addAttribute("newComment", new LectureComment());
+        return "lectureDetail"; // Make this JSP page
+    }
+    @PostMapping("/lecture/{id}/comment")
+    public String postComment(@PathVariable Long id,
+                              @RequestParam("content") String content,
+                              Principal principal) {
+        LectureMaterial lecture = lecturerepo.findById(id).orElseThrow();
+        String email = principal.getName();
+        User user = userRepo.findByEmail(email).orElseThrow();
+        LectureComment comment = new LectureComment();
+        comment.setContent(content);
+        comment.setUser(user);
+        comment.setLectureMaterial(lecture);
+        comment.setCreatedAt(java.time.LocalDateTime.now());
+
+        lectureCommentRepo.save(comment);
+        return "redirect:/lecture/" + id;
     }
 
     @GetMapping("/upload")

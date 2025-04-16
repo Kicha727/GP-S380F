@@ -58,4 +58,8 @@ public class User {
     public boolean isTeacher() {
         return role == UserRole.TEACHER;
     }
+
+    public User orElseThrow() {
+        return null;
+    }
 }

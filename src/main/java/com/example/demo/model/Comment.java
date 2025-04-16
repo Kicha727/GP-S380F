@@ -23,6 +23,17 @@ public class Comment {
     @JoinColumn(name = "poll_id")
     private Poll poll;
 
+    @ManyToOne
+    @JoinColumn(name = "lecture_material_id")
+    private LectureMaterial lectureMaterial;
+    public LectureMaterial getLectureMaterial() {
+        return lectureMaterial;
+    }
+
+    public void setLectureMaterial(LectureMaterial lectureMaterial) {
+        this.lectureMaterial = lectureMaterial;
+    }
+
     // Getters and Setters
     public Long getId() {
         return id;
