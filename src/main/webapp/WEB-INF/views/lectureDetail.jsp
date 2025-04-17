@@ -1,0 +1,127 @@
+<<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Material Detail</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{
+            min-height: 75rem;
+            padding-top: 4.5rem;
+        }
+        #authButton{
+            position: relative;
+            z-index: 1050;
+            margin-left: 10px;
+            padding: 6px 12px;
+            font-size: 16px;
+            color: white !important;
+            background-color: #198754 !important;
+            border-color: #198754 !important;
+        }
+        #authButton:hover {
+            background-color: #157347 !important;
+            border-color: #146c43 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">MUHK</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
+                <ul class="navbar-nav" id="navMenu"></ul>
+                <div class="d-flex align-items-center">
+                    <button id="authButton" class="btn btn-outline-success"></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content container -->
+    <div class="container mt-5">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h2 class="card-title">${lecture.title}</h2>
+                <a class="btn btn-primary btn-sm mb-2" href="/download/${lecture.id}">📄 Download File</a>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h3 class="card-title">🗨 Comments</h3>
+                <ul class="list-group list-group-flush">
+                    <c:forEach var="comment" items="${comments}">
+                        <li class="list-group-item">
+                            <strong>${comment.user.name}</strong>: ${comment.content}<br/>
+                            <small class="text-muted">${comment.createdAt}</small>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">➕ Add a Comment</h3>
+                <form method="post" action="/lecture/${lecture.id}/comment">
+                    <div class="mb-3">
+                        <textarea name="content" class="form-control" rows="3" required placeholder="Write your comment here..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Post Comment</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-3">
+            <a href="/" class="btn btn-outline-secondary">← Back to Lecture List</a>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const userId = '<%= session.getAttribute("userId") %>';
+        const user = localStorage.getItem("user") || (userId && userId !== 'null');
+        const navMenu = document.getElementById("navMenu");
+        const authButton = document.getElementById("authButton");
+
+        if (user) {
+            navMenu.innerHTML = `
+                <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/lectures">Course Materials</a></li>
+                <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
+                <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
+                <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
+            `;
+            authButton.textContent = "Logout";
+            authButton.classList.add("btn-danger");
+            authButton.addEventListener("click", function () {
+                localStorage.removeItem("user");
+                window.location.href = "/logout";
+            });
+        } else {
+            navMenu.innerHTML = `
+                <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+            `;
+            authButton.textContent = "Login";
+            authButton.classList.add("btn-success");
+            authButton.addEventListener("click", function () {
+                window.location.href = "/login";
+            });
+        }
+    });
+</script>
+</body>
+</html>
