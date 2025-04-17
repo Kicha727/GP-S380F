@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.model.Poll;
+import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.PollRepository;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ public class PageController {
 
     @Autowired
     private PollRepository pollRepository;
+    private PollRepository CommentRepository;
 
     @GetMapping("/")
     public String indexPage(Model model) {
@@ -30,7 +32,6 @@ public class PageController {
         if (userId == null) {
             return "redirect:/login";
         }
-        
         return "personal-info"; // maps to /WEB-INF/views/personal-info.jsp
     }
 
@@ -41,14 +42,13 @@ public class PageController {
         model.addAttribute("polls", polls);
         return "polls";  // resolves to /WEB-INF/views/polls.jsp
     }
-    
+
     @GetMapping("/comment-page")
     public String CommentPage(Model model) {
-        List<Poll> comments = pollRepository.findAll();
+        List<Poll> comments = CommentRepository.findAll();
         model.addAttribute("comments", comments);
         return "comments";  // resolves to /WEB-INF/views/comments.jsp
     }
 
-    
     // Add more mappings as you create pages
 }
