@@ -15,7 +15,7 @@
     </c:forEach>
 </ul>
 
-<form action="/lecture/${lecture.id}/comment" method="post">
+<form action="/lectures/${lecture.id}/comment" method="post">
     <textarea name="content" placeholder="寫下你的留言..."></textarea>
     <button type="submit">送出</button>
 </form>

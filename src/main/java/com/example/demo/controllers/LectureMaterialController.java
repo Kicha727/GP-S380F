@@ -43,22 +43,23 @@ public class LectureMaterialController {
         model.addAttribute("lectureMaterials", lectureMaterials);
         return "lecturelist";
     }
-    @GetMapping("/lecture/{id}")
+    @GetMapping("/lectures/{id}")
     public String viewLectureDetail(@PathVariable Long id, Model model) {
         LectureMaterial lecture = lecturerepo.findById(id).orElseThrow();
         List<LectureComment> comments = lectureCommentRepo.findByLectureMaterial(lecture);
 
-        model.addAttribute("lecture", lecture);
+        model.addAttribute("lectures", lecture);
         model.addAttribute("comments", comments);
         model.addAttribute("newComment", new LectureComment());
         return "lectureDetail"; // Make this JSP page
     }
-    @PostMapping("/lecture/{id}/comment")
+    @PostMapping("/lectures/{id}/comment")
     public String postComment(@PathVariable Long id,
                               @RequestParam("content") String content,
                               Principal principal) {
         LectureMaterial lecture = lecturerepo.findById(id).orElseThrow();
         String email = principal.getName();
+        System.out.println("User logged in: " + email);
         User user = userRepo.findByEmail(email).orElseThrow();
         LectureComment comment = new LectureComment();
         comment.setContent(content);
@@ -67,7 +68,7 @@ public class LectureMaterialController {
         comment.setCreatedAt(java.time.LocalDateTime.now());
 
         lectureCommentRepo.save(comment);
-        return "redirect:/lecture/" + id;
+        return "redirect:/lectures/" + id;
     }
 
     @GetMapping("/upload")
@@ -78,7 +79,21 @@ public class LectureMaterialController {
 
     @PostMapping("/upload")
     @RolesAllowed("TEACHER")
-    public String handleUpload(@RequestParam("title") String title, @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) throws IOException {
+    public String handleUpload(@RequestParam("title") String title,
+                               @RequestParam("file") MultipartFile file,
+                               RedirectAttributes redirectAttributes) throws IOException {
+
+        if (file.isEmpty()) {
+            redirectAttributes.addFlashAttribute("message", "Please select a file to upload.");
+            return "redirect:/upload";
+        }
+
+        // Check if uploaded file is a PDF
+        if (!"application/pdf".equalsIgnoreCase(file.getContentType())) {
+            redirectAttributes.addFlashAttribute("message", "Only PDF files are allowed.");
+            return "redirect:/upload";
+        }
+
         LectureMaterial lectureMaterial = new LectureMaterial();
         lectureMaterial.setTitle(title);
         lectureMaterial.setFileName(file.getOriginalFilename());
@@ -86,16 +101,17 @@ public class LectureMaterialController {
 
         lecturerepo.save(lectureMaterial);
         redirectAttributes.addFlashAttribute("message", "LectureMaterial uploaded successfully!");
-        return "redirect:/lecture/upload";
+        return "redirect:/upload";
     }
 
-    @GetMapping("/download{id}")
+    @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {
         Optional<LectureMaterial> optional = lecturerepo.findById(id);
         if (optional.isPresent()) {
             LectureMaterial material = optional.get();
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + material.getFileName() + "\"")
+                    .header(HttpHeaders.CONTENT_TYPE, "application/pdf") // assuming PDFs only
                     .body(material.getFileData());
         } else {
             return ResponseEntity.notFound().build();

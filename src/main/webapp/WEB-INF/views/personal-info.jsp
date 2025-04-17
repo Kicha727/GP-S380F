@@ -196,7 +196,7 @@
         function setupUI(userData) {
             navMenu.innerHTML = `
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/course">Course Material</a></li>
+                <li class="nav-item"><a class="nav-link" href="/lectures">Course Material</a></li>
                 <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
                 <li class="nav-item"><a class="nav-link active" href="/personal-info">Personal Info</a></li>
                 <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
