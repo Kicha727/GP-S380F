@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -36,7 +35,7 @@ public class CommentController {
         model.addAttribute("comment", comment);
 
         // Get comments for the lec
-        List<Comment> comments = commentRepository.findByCommentId(Id);
+        Optional<Comment> comments = commentRepository.findById(Id);
         model.addAttribute("comments", comments);
 
         return "comments";
@@ -67,9 +66,9 @@ public class CommentController {
         /*Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = userService.findByUsername(auth.getName());
 */
-        Comment comment = (Comment) commentRepository.findByCommentId(id);
+        Optional<Comment> comment = commentRepository.findById(id);
 
-        if (comment == null) {
+        if (comment.isEmpty()) {
             redirectAttributes.addFlashAttribute("error", "Comment not found");
             return "redirect:/polls";
         }
@@ -84,7 +83,7 @@ public class CommentController {
             return "redirect:/comments/" + comment.getPoll().getId();
         }
 */
-        Long pollId = comment.getPoll().getId();
+        Long pollId = comment.get().getPoll().getId();
         //commentRepository.deleteComment(id);
         redirectAttributes.addFlashAttribute("success", "Comment deleted successfully");
 
