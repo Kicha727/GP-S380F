@@ -58,15 +58,16 @@
     </div>
 </nav>
 
-
+<br><br>
 <div class="container mt-4">
     <h2>Comments</h2>
     <div class="mt-3">
-        <a href="${pageContext.request.contextPath}/index" class="btn btn-secondary">Back to Index Page</a>
+        <a href="/" class="btn btn-secondary">Home</a>
+        <a href="/login" class="btn btn-secondary">Login</a>
     </div>
     <br>
 
-    <c:if test="${isStudent || isTeacher}">
+    <c:if test="${sessionScope.userId != null}">
         <div class="card mb-4">
             <div class="card-header">
                 <h4>Add Comment</h4>
@@ -90,6 +91,8 @@
                         <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Submit Comment</button>
+                    <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+
                 </form>
             </div>
         </div>
@@ -98,9 +101,9 @@
 
         <c:if test="${empty comments}">
             <div class="alert alert-info">
-                No comments yet.
-                <c:if test="${isStudent}">
-                    Be the first to comment!
+                No comments yet. Be the first to comment!
+                <c:if test="${sessionScope.userId = null}">
+                    <a herf="/login">login</a>
                 </c:if>
             </div>
         </c:if>
@@ -109,7 +112,7 @@
             <div class="comment-container" id="comment-${comment.id}">
                 <div class="comment-header">
                     <div>
-                        <span class="comment-user">${comment.user.username}</span>
+                        <span class="comment-user">${comment.user.name}</span>
                         <span class="comment-time">
                                 <fmt:parseDate value="${comment.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
                                 <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd HH:mm" />
