@@ -60,12 +60,21 @@
                         <div class="card-body">
                             <h5 class="card-title">${lecture.title}</h5>
                             <div class="mt-3">
-                                <a href="/download/${lecture.id}" class="btn btn-sm btn-primary me-2">
+                                <a href="${pageContext.request.contextPath}/download/${lecture.id}" class="btn btn-sm btn-primary me-2">
                                     <i class="bi bi-download"></i> Download
                                 </a>
                                 <a href="/lectures/${lecture.id}" class="btn btn-sm btn-outline-secondary">
                                     <i class="bi bi-eye"></i> View Details
                                 </a>
+                                <!-- 🗑 Delete Form (for TEACHER only) -->
+                                <c:if test="${sessionScope.userRole == 'TEACHER'}">
+                                <form action="/lectures/${lecture.id}/delete" method="post"
+                                          onsubmit="return confirm('Are you sure you want to delete this lecture?');">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </c:if>
                             </div>
                         </div>
                     </div>
@@ -97,7 +106,9 @@
                 <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
                 <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
                 <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
+                <li class="nav-item"><a class="nav-link" href="/upload">Upload Lecture</a></li>
             `;
+
             authButton.textContent = "Logout";
             authButton.classList.add("btn-danger");
             authButton.addEventListener("click", function () {

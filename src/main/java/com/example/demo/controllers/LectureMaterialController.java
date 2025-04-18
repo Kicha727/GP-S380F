@@ -7,6 +7,7 @@ import com.example.demo.repository.LectureCommentRepository;
 import com.example.demo.repository.LectureMaterialRepository;
 import com.example.demo.repository.UserRepository;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -73,8 +74,15 @@ public class LectureMaterialController {
 
     @GetMapping("/upload")
     @RolesAllowed("TEACHER")
-    public String showUploadForm() {
-        return "uploadLecture"; // JSP: /WEB-INF/views/uploadLecture.jsp
+    public String showUploadForm(HttpSession session, RedirectAttributes redirectAttributes) {
+        String role = (String) session.getAttribute("userRole");
+
+        if (role == null || (!role.equals("TEACHER") && !role.equals("ADMIN"))) {
+            redirectAttributes.addFlashAttribute("message", "You do not have permission to upload materials.");
+            return "redirect:/";
+        }
+
+        return "uploadLecture"; // uploadLecture.jsp
     }
 
     @PostMapping("/upload")
@@ -103,6 +111,19 @@ public class LectureMaterialController {
         redirectAttributes.addFlashAttribute("message", "LectureMaterial uploaded successfully!");
         return "redirect:/upload";
     }
+    @PostMapping("/lectures/{id}/delete")
+    @RolesAllowed("TEACHER")
+    public String deleteLecture(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Optional<LectureMaterial> lectureOpt = lecturerepo.findById(id);
+        if (lectureOpt.isPresent()) {
+            lecturerepo.deleteById(id);
+            redirectAttributes.addFlashAttribute("message", "Lecture deleted successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Lecture not found.");
+        }
+        return "redirect:/lectures";
+    }
+
 
     @GetMapping("/download/{id}")
     public ResponseEntity<byte[]> downloadFile(@PathVariable Long id) {

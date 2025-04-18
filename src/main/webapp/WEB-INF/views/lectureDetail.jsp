@@ -49,13 +49,12 @@
 
     <!-- Main content container -->
     <div class="container mt-5">
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h2 class="card-title">${lecture.title}</h2>
-                <a class="btn btn-primary btn-sm mb-2" href="/download/${lecture.id}">📄 Download File</a>
-            </div>
-        </div>
+        <!-- Lecture Info -->
+        <p class="card-text text-muted">
+            Uploaded at: <fmt:formatDate value="${lecture.createdAt}" pattern="yyyy-MM-dd HH:mm" />
+        </p>
 
+        <!-- Comments List -->
         <div class="card shadow-sm mb-4">
             <div class="card-body">
                 <h3 class="card-title">🗨 Comments</h3>
@@ -70,10 +69,12 @@
             </div>
         </div>
 
+        <!-- Comment Form -->
         <div class="card shadow-sm">
             <div class="card-body">
                 <h3 class="card-title">➕ Add a Comment</h3>
-                <form method="post" action="/lecture/${lecture.id}/comment">
+                <!-- ✅ FIXED FORM ACTION -->
+                <form method="post" action="/lectures/${lecture.id}/comment">
                     <div class="mb-3">
                         <textarea name="content" class="form-control" rows="3" required placeholder="Write your comment here..."></textarea>
                     </div>
@@ -82,8 +83,9 @@
             </div>
         </div>
 
+        <!-- Back to list -->
         <div class="mt-3">
-            <a href="/" class="btn btn-outline-secondary">← Back to Lecture List</a>
+            <a href="/lectures" class="btn btn-outline-secondary">← Back to Lecture List</a>
         </div>
     </div>
 
