@@ -68,60 +68,32 @@
     <br>
 
     <c:if test="${sessionScope.userId != null}">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Add Comment</h4>
-                <c:if test="${sessionScope.userId != null && sessionScope.userRole == 'TEACHER'}">
-                    <a href="/comments/delete" class="btn btn-primary">Manage Comments</a>
-                </c:if>
-            </div>
-            <div class="card-body">
-                <c:if test="${not empty error}">
-                    <div class="alert alert-danger">${error}</div>
-                </c:if>
-                <c:if test="${not empty success}">
-                    <div class="alert alert-success">${success}</div>
-                </c:if>
 
-                <form action="${pageContext.request.contextPath}/comments/add" method="post">
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                    <input type="hidden" name="pollId" value="${poll.id}" />
-                    <div class="form-group">
-                        <label for="content">Input your comment</label>
-                        <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit Comment</button>
-                    <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
-
-                </form>
-            </div>
-        </div>
 
         <h3>Comments (${comments.size()})</h3>
 
         <c:if test="${empty comments}">
-            <div class="alert alert-info">
-                No comments yet. Be the first to comment!
-                <c:if test="${sessionScope.userId = null}">
-                    <a herf="/login">login</a>
-                </c:if>
-            </div>
+            <div class="alert alert-info">No comments yet. Be the first to comment! </div>
         </c:if>
 
         <c:forEach var="comment" items="${comments}">
             <div class="comment-container" id="comment-${comment.id}">
                 <div class="comment-header">
-                    <div>
-                        <span class="comment-user">${comment.user.name}</span>
-                        <span class="comment-time">
+                    <div class="d-flex justify-content-between">
+                        <strong class="comment-user">${comment.user.name}</strong>
+                            <c:if test="${comment.user.role == 'TEACHER'}">
+                                <span class="bg-primary text-light">Teacher</span>
+                            </c:if>
+                            <span class="comment-time">
                                 <fmt:parseDate value="${comment.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
                                 <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd HH:mm" />
                             </span>
                     </div>
 
-                    <c:if test="${isTeacher || currentUser.id == comment.user.id}">
+
+                    <c:if test="${sessionScope.userRole == 'TEACHER' || sessionScope.userId == comment.user.id}">
                         <div class="comment-actions">
-                            <form action="${pageContext.request.contextPath}/comments/delete/${comment.id}" method="post" style="display: inline;">
+                            <form action="/comments/delete/${comment.id}" method="post" style="display: inline;">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</button>
                             </form>
@@ -129,9 +101,7 @@
                     </c:if>
                 </div>
 
-                <div class="comment-content">
-                        ${comment.content}
-                </div>
+                <div class="comment-content">${comment.content}</div>
             </div>
         </c:forEach>
 

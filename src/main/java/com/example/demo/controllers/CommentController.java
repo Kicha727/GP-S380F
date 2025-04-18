@@ -46,7 +46,7 @@ public class CommentController {
 
         Optional<User> userOpt = userRepository.findById(userId);
         if (!userOpt.isPresent()) {
-            redirectAttributes.addFlashAttribute("error", "找不到用戶");
+            redirectAttributes.addFlashAttribute("error", "User not found");
             return "redirect:/register";
         }
 
@@ -54,6 +54,7 @@ public class CommentController {
         comment.setContent(String.valueOf(userOpt));
         comment.setContent(String.valueOf(userId));
         comment.setCreatedAt(LocalDateTime.now());
+        comment.setContent(String.valueOf(Id));
         comment.setContent(content);
 
 
@@ -109,6 +110,6 @@ public class CommentController {
         redirectAttributes.addFlashAttribute("success", "Comment deleted successfully");
 
         // Redirect to the poll page
-        return "redirect:/comments/" + comment.getPoll();
+        return "redirect:/comments";
     }
 }

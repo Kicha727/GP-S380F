@@ -53,5 +53,6 @@ public class PageController {
         model.addAttribute("comments", comments);
         return "comments";  // resolves to /WEB-INF/views/comments.jsp
     }
+
     // Add more mappings as you create pages
 }
