@@ -270,7 +270,7 @@
         <div class="login-container">
             <div class="login-image"></div>
             <div class="login-form">
-                <h1 class="form-title">Yoooo My Nigger!</h1>
+                <h1 class="form-title">Hello User!</h1>
                 <p class="form-subtitle">Sign in to continue to your account</p>
                 
                 <c:if test="${not empty error}">
