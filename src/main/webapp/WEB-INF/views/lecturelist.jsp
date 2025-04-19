@@ -425,12 +425,6 @@
                 <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
             `;
 
-            if (userRole === "TEACHER") {
-                navMenu.innerHTML += `
-                    <li class="nav-item"><a class="nav-link" href="/upload">Upload Lecture</a></li>
-                `;
-            }
-
             authButton.textContent = "Logout";
             authButton.classList.add("btn-danger");
             authButton.addEventListener("click", function () {
