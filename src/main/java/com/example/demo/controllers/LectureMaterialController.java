@@ -138,6 +138,13 @@ public class LectureMaterialController {
     public String deleteLecture(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         Optional<LectureMaterial> lectureOpt = lecturerepo.findById(id);
         if (lectureOpt.isPresent()) {
+            // Manually delete all associated comments first
+            List<LectureComment> comments = lectureCommentRepo.findByLectureMaterialId(id);
+            if (!comments.isEmpty()) {
+                lectureCommentRepo.deleteAll(comments);  // Delete all comments associated with the lecture
+            }
+
+            // Then delete the lecture material
             lecturerepo.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Lecture deleted successfully!");
         } else {
