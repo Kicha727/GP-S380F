@@ -48,6 +48,7 @@
     </nav>
     <div class="container my-4">
         <h2 class="mb-4">Lecture Materials</h2>
+        <h2 class="mb-4">Computer Science</h2>
 
         <c:if test="${not empty message}">
             <div class="alert alert-success">${message}</div>
