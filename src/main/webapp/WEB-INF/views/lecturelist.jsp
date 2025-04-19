@@ -411,9 +411,12 @@
                                 <i class="fas fa-eye me-1"></i> View Details
                             </a>
                             <c:if test="${sessionScope.userRole == 'TEACHER'}">
-                                <button onclick="deleteLecture(${lecture.id})" class="btn btn-danger">
-                                    <i class="fas fa-trash me-1"></i>
-                                </button>
+                                <form action="/lectures/${lecture.id}/delete" method="post"
+                                      onsubmit="return confirm('Are you sure you want to delete this lecture?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash me-1"></i>
+                                    </button>
+                                </form>
                             </c:if>
                         </div>
                     </div>
