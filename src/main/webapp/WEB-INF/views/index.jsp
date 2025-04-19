@@ -183,11 +183,6 @@
             box-shadow: 0 4px 12px rgba(67, 56, 202, 0.3);
         }
 
-        .horizontal-scroll {
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-        }
-
         .feature-card {
             background-color: var(--card-bg);
             border-radius: 1rem;
@@ -311,7 +306,7 @@
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
                 aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <span class="toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0" id="navMenu"></ul>
@@ -329,19 +324,40 @@
         <div class="container">
             <h1 class="hero-title">Welcome to MUHK</h1>
             <p class="hero-subtitle">Modern University of Hong Kong - Where Innovation Meets Education</p>
-            <a href="/course" class="btn btn-light hero-button">Explore Courses <i class="fas fa-arrow-right ms-2"></i></a>
+            <a href="/lectures" class="btn btn-light hero-button">Explore Courses <i class="fas fa-arrow-right ms-2"></i></a>
         </div>
     </section>
 
-    <!-- Lecture Section -->
+    <!-- Features Section -->
     <section class="my-5">
         <div class="container">
-            <h2 class="section-title mb-4">YOUR LECTURE</h2>
-            <div id="lectureContainer" class="horizontal-scroll d-flex flex-nowrap overflow-auto gap-4"></div>
+            <h2 class="section-title mb-4">Why Choose MUHK</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card h-100">
+                        <i class="fas fa-graduation-cap feature-icon"></i>
+                        <h3 class="feature-title">Quality Education</h3>
+                        <p class="feature-text">Our programs are designed to meet international standards with a focus on practical skills and critical thinking.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card h-100">
+                        <i class="fas fa-flask feature-icon"></i>
+                        <h3 class="feature-title">Innovative Research</h3>
+                        <p class="feature-text">Join our cutting-edge research programs and contribute to solutions for global challenges.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card h-100">
+                        <i class="fas fa-globe feature-icon"></i>
+                        <h3 class="feature-title">Global Perspective</h3>
+                        <p class="feature-text">Connect with students and faculty from around the world to broaden your horizons.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
-
-
+    
     <!-- Recent Polls Section -->
     <section class="my-5">
         <div class="container">
@@ -466,74 +482,7 @@
         if (userId && userId !== 'null' && !localStorage.getItem("user")) {
             localStorage.setItem("user", "true");
         }
-
-        // Fetch lecture list from server and display as cards
-        console.log("📦 userId from session:", userId);
-
-        if (!userId || userId === "null") {
-            console.warn("⚠️ userId is not defined or null");
-        } else {
-            const endpoint = `/getLectures?userID=${userId}`;
-            console.log("🌐 Fetching lectures from:", endpoint);
-
-            fetch(endpoint)
-                .then(response => {
-                    console.log("✅ Raw response:", response);
-                    if (!response.ok) {
-                        throw new Error(`❌ HTTP error! Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("🧾 Parsed lecture data:", data);
-                    const container = document.getElementById('lectureContainer');
-
-                    if (!Array.isArray(data)) {
-                        console.error("❗ Response is not an array. Got:", data);
-                        return;
-                    }
-
-                    data.forEach((lecture, index) => {
-                        console.log(`📘 Lecture #${index + 1}`, lecture);
-
-                        const card = document.createElement('div');
-                        card.className = 'feature-card p-3 flex-shrink-0';
-                        card.style.width = '300px';
-
-                        const icon = document.createElement('i');
-                        icon.className = 'fas fa-book feature-icon';
-                        card.appendChild(icon);
-
-                        const title = document.createElement('h3');
-                        title.className = 'feature-title';
-                        title.textContent = lecture.code;
-                        card.appendChild(title);
-
-                        const text = document.createElement('p');
-                        text.className = 'feature-text';
-                        text.textContent = lecture.name;
-                        card.appendChild(text);
-
-                        container.appendChild(card);
-
-
-                        if (!lecture.code || !lecture.name) {
-                            console.warn(`⚠️ Missing data in lecture #${index + 1}:`, lecture);
-                        }
-
-                        container.appendChild(card);
-                    });
-
-                    if (data.length === 0) {
-                        console.info("ℹ️ No lectures found for this user.");
-                    }
-                })
-                .catch(err => console.error("💥 Failed to load lectures:", err));
-        }
     });
-
-
-
 </script>
 </body>
 </html>
