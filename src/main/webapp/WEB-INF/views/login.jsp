@@ -123,7 +123,6 @@
 
             navMenu.innerHTML = `
                 <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
             `;
             authButton.textContent = "Login";
             authButton.classList.add("btn-success");
