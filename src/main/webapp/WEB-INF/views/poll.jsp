@@ -81,7 +81,14 @@
         
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h1 class="h3 mb-0">${poll.question}</h1>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="h3 mb-0">${poll.question}</h1>
+                    <c:if test="${isTeacher == true}">
+                        <form action="/polls/${poll.id}/delete" method="post" onsubmit="return confirm('Are you sure you want to delete this poll? This action cannot be undone.');">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete Poll</button>
+                        </form>
+                    </c:if>
+                </div>
             </div>
             <div class="card-body">
                 <!-- Poll Options -->
@@ -180,7 +187,7 @@
             if (user) {
                 navMenu.innerHTML = `
                     <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/lectures">Course Material</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/course">Course Material</a></li>
                     <li class="nav-item"><a class="nav-link active" href="/polls">Polls</a></li>
                     <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
                     <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
