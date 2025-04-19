@@ -111,7 +111,7 @@
                             <c:if test="${comment.user.role == 'TEACHER'}">
                                 <span class="badge bg-primary text-light">Teacher</span>
                             </c:if>
-                            &emsp;
+                            
                             <span class="comment-time">
                                 <fmt:parseDate value="${comment.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
                                 <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd HH:mm" />
