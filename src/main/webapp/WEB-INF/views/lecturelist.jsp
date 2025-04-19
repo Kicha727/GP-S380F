@@ -95,6 +95,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const userId = '<%= session.getAttribute("userId") %>';
+        const userRole = '<%= session.getAttribute("userRole") %>';
         const user = localStorage.getItem("user") || (userId && userId !== 'null');
         const navMenu = document.getElementById("navMenu");
         const authButton = document.getElementById("authButton");
@@ -106,8 +107,13 @@
                 <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
                 <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
                 <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
-                <li class="nav-item"><a class="nav-link" href="/upload">Upload Lecture</a></li>
             `;
+
+            if (userRole === "TEACHER") {
+                navMenu.innerHTML += `
+                    <li class="nav-item"><a class="nav-link" href="/upload">Upload Lecture</a></li>
+                `;
+            }
 
             authButton.textContent = "Logout";
             authButton.classList.add("btn-danger");
