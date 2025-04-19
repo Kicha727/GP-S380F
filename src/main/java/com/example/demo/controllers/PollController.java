@@ -56,6 +56,9 @@ public class PollController {
                 if (userVote != null) {
                     model.addAttribute("userVote", userVote.getId());
                 }
+                
+                // Check if user is a teacher (for delete functionality)
+                model.addAttribute("isTeacher", user.isTeacher());
             }
         }
         
@@ -188,5 +191,33 @@ public class PollController {
         List<Poll> polls = pollRepository.findAll();
         model.addAttribute("polls", polls);
         return "polls";
+    }
+    
+    // Delete a poll (for teachers only)
+    @PostMapping("/{pollId}/delete")
+    public String deletePoll(@PathVariable Long pollId, HttpSession session) {
+        Long userId = (Long) session.getAttribute("userId");
+        if (userId == null) {
+            return "redirect:/login";
+        }
+        
+        Optional<User> userOpt = userRepository.findById(userId);
+        if (userOpt.isEmpty() || !userOpt.get().isTeacher()) {
+            return "redirect:/polls";
+        }
+        
+        // Delete the poll and associated comments
+        try {
+            // First delete associated comments to avoid foreign key constraint errors
+            commentRepository.deleteByPollId(pollId);
+            
+            // Then delete the poll (this should cascade delete poll options)
+            pollRepository.deleteById(pollId);
+        } catch (Exception e) {
+            // Log error or show a message
+            System.err.println("Error deleting poll: " + e.getMessage());
+        }
+        
+        return "redirect:/polls";
     }
 } 
