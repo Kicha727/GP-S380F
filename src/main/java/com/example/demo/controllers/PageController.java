@@ -3,6 +3,8 @@ package com.example.demo.controllers;
 import com.example.demo.model.LectureMaterial;
 import com.example.demo.model.Poll;
 import com.example.demo.model.User;
+import com.example.demo.model.Comment;
+import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.LectureMaterialRepository;
 import com.example.demo.repository.PollRepository;
 import com.example.demo.repository.UserRepository;
@@ -25,6 +27,9 @@ public class PageController {
     
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CommentRepository CommentRepository;
     
     @Autowired
     private LectureMaterialRepository lectureMaterialRepository;
@@ -82,13 +87,13 @@ public class PageController {
         model.addAttribute("polls", polls);
         return "polls";  // resolves to /WEB-INF/views/polls.jsp
     }
-    
-    /*@GetMapping("/comment-page")
+
+    @GetMapping("/comments")
     public String CommentPage(Model model) {
-        List<Poll> polls = pollRepository.findAll();
-        model.addAttribute("comment", comment);
-        return "comment-page";  // resolves to /WEB-INF/views/comment-page.jsp
-    }*/
+        List<Comment> comments = CommentRepository.findAll();
+        model.addAttribute("comments", comments);
+        return "comments";  // resolves to /WEB-INF/views/comments.jsp
+    }
 
     
     // Add more mappings as you create pages
