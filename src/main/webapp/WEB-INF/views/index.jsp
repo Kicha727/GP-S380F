@@ -26,6 +26,23 @@
                 font-size: 3.5rem;
             }
         }
+
+        :root {
+            --bs-body-color: #212529;
+            --bs-body-bg: #fff;
+            --bs-border-color: #dee2e6;
+            --bs-border-radius: 0.375rem;
+            --bs-primary: #0d6efd;
+            --bs-secondary: #6c757d;
+            --bs-success: #198754;
+            --bs-info: #0dcaf0;
+            --bs-warning: #ffc107;
+            --bs-danger: #dc3545;
+            --bs-light: #f8f9fa;
+            --bs-dark: #212529;
+            --bs-white: #fff;
+        }
+
         .b-example-divider {
             width: 100%;
             height: 3rem;
