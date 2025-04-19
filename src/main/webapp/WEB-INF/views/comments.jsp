@@ -98,9 +98,17 @@
 </c:if>
 
 <c:if test="${sessionScope.userId != null}">
-        <c:if test="${empty comments}">
-            <div class="alert alert-info">No comments yet. Be the first to comment! </div>
-        </c:if>
+    <form action="/comments/addComment" method="post" class="mb-4">
+        <div class="form-group">
+            <textarea name="content" class="form-control" rows="3" placeholder="Add your comment here" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+    </form>
+    <c:if test="${empty comments}">
+        <div class="alert alert-info">No comments yet. Be the first to comment! </div>
+    </c:if>
+
+
 
         <c:forEach var="comment" items="${comments}">
             <div class="comment-container" id="comment-${comment.id}">
@@ -111,7 +119,7 @@
                             <c:if test="${comment.user.role == 'TEACHER'}">
                                 <span class="badge bg-primary text-light">Teacher</span>
                             </c:if>
-                            
+
                             <span class="comment-time">
                                 <fmt:parseDate value="${comment.createdAt}" pattern="yyyy-MM-dd'T'HH:mm" var="parsedDate" type="both" />
                                 <fmt:formatDate value="${parsedDate}" pattern="yyyy-MM-dd HH:mm" />

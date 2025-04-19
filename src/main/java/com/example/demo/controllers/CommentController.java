@@ -38,7 +38,10 @@ public class CommentController {
 
 
     @PostMapping("/addComment")
-    public String addComment(@RequestParam Long Id, @RequestParam String content, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String addComment(@RequestParam(defaultValue = "1") Long Id,
+                             @RequestParam String content,
+                             HttpSession session,
+                             RedirectAttributes redirectAttributes) {
         Long userId = (Long) session.getAttribute("userId");
         if (userId == null) {
             return "redirect:/login";
@@ -50,23 +53,25 @@ public class CommentController {
             return "redirect:/register";
         }
 
+        User user = userOpt.get();
+
         Comment comment = new Comment();
-        comment.setContent(String.valueOf(userOpt));
-        comment.setContent(String.valueOf(userId));
+        comment.setContent(content);  // Set the actual comment content
+        comment.setUser(user);        // Set the user object (assuming Comment has user field)
         comment.setCreatedAt(LocalDateTime.now());
-        comment.setContent(String.valueOf(Id));
-        comment.setContent(content);
+        // comment.setPollId(Id);     // Uncomment if you have a pollId field
 
 
         if (comment != null) {
             redirectAttributes.addFlashAttribute("success", "Add Comment successfully");
             if (userId!=null) {
-                return String.valueOf(commentRepository.save(comment));
+                commentRepository.save(comment);
             }
         } else {
             redirectAttributes.addFlashAttribute("error", "Failed to add Comment");
         }
-        return "redirect:/comments";
+
+        return "redirect:/comments";  // Make sure this URL mapping exists as a @GetMapping
     }
 
 
