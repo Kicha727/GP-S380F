@@ -120,13 +120,20 @@
 
 <!-- Main Content -->
 <main class="container">
+    <div class="bg-body-tertiary p-5 rounded">
+        <h1>Welecome to MUMK</h1>
+        <p class="lead">The Metropolitan University of Hong Kong was established by the government in 1989 to provide distance education and full-time courses in 2001. After years of hard work, Metropolitan University's open and flexible education courses have taken a leading position in the Asia-Pacific region. At the same time, the full-time courses we provide to qualified secondary school graduates are comparable to other large universities in Hong Kong. Today, Metropolitan University is a young, vibrant and well-rounded university of high quality.</p>
+        <a class="btn btn-lg btn-primary" href="https://www.hkmu.edu.hk/tc/" role="button">More About MUHK &raquo;</a>
+    </div>
+</main>
+<main class="container "style="padding-top: 10px">
     <c:choose>
         <c:when test="${user != null}">
             <!-- Content for logged-in users -->
             <div class="row">
                 <div class="col-md-12">
                     <div class="bg-body-tertiary p-4 rounded mb-4">
-                        <h1>Welcome, ${user.name}!</h1>
+                        <h1>Welcome Back, ${user.name}!</h1>
                         <p class="lead">
                             <strong>Your Course:</strong> ${user.course} | 
                             <strong>Academic Year:</strong> ${user.academicYear}
