@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="auto">
 <head>
@@ -26,23 +27,6 @@
                 font-size: 3.5rem;
             }
         }
-
-        :root {
-            --bs-body-color: #212529;
-            --bs-body-bg: #fff;
-            --bs-border-color: #dee2e6;
-            --bs-border-radius: 0.375rem;
-            --bs-primary: #0d6efd;
-            --bs-secondary: #6c757d;
-            --bs-success: #198754;
-            --bs-info: #0dcaf0;
-            --bs-warning: #ffc107;
-            --bs-danger: #dc3545;
-            --bs-light: #f8f9fa;
-            --bs-dark: #212529;
-            --bs-white: #fff;
-        }
-
         .b-example-divider {
             width: 100%;
             height: 3rem;
@@ -136,11 +120,77 @@
 
 <!-- Main Content -->
 <main class="container">
-    <div class="bg-body-tertiary p-5 rounded">
-        <h1>Welecome to MUMK</h1>
-        <p class="lead">The Metropolitan University of Hong Kong was established by the government in 1989 to provide distance education and full-time courses in 2001. After years of hard work, Metropolitan University's open and flexible education courses have taken a leading position in the Asia-Pacific region. At the same time, the full-time courses we provide to qualified secondary school graduates are comparable to other large universities in Hong Kong. Today, Metropolitan University is a young, vibrant and well-rounded university of high quality.</p>
-        <a class="btn btn-lg btn-primary" href="https://www.hkmu.edu.hk/tc/" role="button">More About MUHK &raquo;</a>
-    </div>
+    <c:choose>
+        <c:when test="${user != null}">
+            <!-- Content for logged-in users -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="bg-body-tertiary p-4 rounded mb-4">
+                        <h1>Welcome, ${user.name}!</h1>
+                        <p class="lead">
+                            <strong>Your Course:</strong> ${user.course} | 
+                            <strong>Academic Year:</strong> ${user.academicYear}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Course Materials Section -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h2 class="h4 mb-0">Your Course Materials</h2>
+                        </div>
+                        <div class="card-body">
+                            <c:choose>
+                                <c:when test="${lectures != null && !lectures.isEmpty()}">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Lecture Title</th>
+                                                    <th>Date Added</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <c:forEach items="${lectures}" var="lecture">
+                                                    <tr>
+                                                        <td>${lecture.title}</td>
+                                                        <td>${sessionScope['lecture_'.concat(lecture.id).concat('_date')]}</td>
+                                                        <td>
+                                                            <a href="/download/${lecture.id}" class="btn btn-sm btn-primary">Download</a>
+                                                            <a href="/lectures/${lecture.id}" class="btn btn-sm btn-secondary">View Details</a>
+                                                        </td>
+                                                    </tr>
+                                                </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <a href="/lectures" class="btn btn-outline-primary mt-3">View All Lectures</a>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="alert alert-info">
+                                        No lecture materials available for your course yet.
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <!-- Content for non-logged in users -->
+            <div class="bg-body-tertiary p-5 rounded">
+                <h1>Welcome to MUHK Learning Portal</h1>
+                <p class="lead">Please log in to view your course materials and participate in polls.</p>
+                <a class="btn btn-lg btn-primary" href="/login" role="button">Login</a>
+                <a class="btn btn-lg btn-secondary" href="/register" role="button">Register</a>
+            </div>
+        </c:otherwise>
+    </c:choose>
     
     <!-- Recent Polls Section -->
     <div class="my-4">
