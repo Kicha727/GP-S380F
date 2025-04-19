@@ -28,8 +28,7 @@ public class PageController {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private CommentRepository CommentRepository;
+   
     
     @Autowired
     private LectureMaterialRepository lectureMaterialRepository;
@@ -88,12 +87,12 @@ public class PageController {
         return "polls";  // resolves to /WEB-INF/views/polls.jsp
     }
 
-    @GetMapping("/comments")
+    /*@GetMapping("/comments")
     public String CommentPage(Model model) {
         List<Comment> comments = CommentRepository.findAll();
         model.addAttribute("comments", comments);
         return "comments";  // resolves to /WEB-INF/views/comments.jsp
-    }
+    }/
 
     
     // Add more mappings as you create pages
