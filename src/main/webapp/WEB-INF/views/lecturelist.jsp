@@ -353,7 +353,23 @@
 
     <!-- Page Header -->
     <div class="page-header">
-        <h1 class="section-title">Lecture Materials</h1>
+        <div class="d-flex align-items-center">
+            <h1 class="section-title">Lecture Materials</h1>
+            <div class="dropdown ms-3">
+                <button class="btn btn-outline-primary dropdown-toggle" type="button" id="lectureFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-filter me-1"></i> Filter
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="lectureFilterDropdown">
+                    <li><a class="dropdown-item" href="/lectures?sort=newest"><i class="fas fa-sort-amount-down me-2"></i>Newest First</a></li>
+                    <li><a class="dropdown-item" href="/lectures?sort=oldest"><i class="fas fa-sort-amount-up me-2"></i>Oldest First</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/lectures?category=all"><i class="fas fa-list-ul me-2"></i>All Categories</a></li>
+                    <li><a class="dropdown-item" href="/lectures?category=notes"><i class="fas fa-sticky-note me-2"></i>Lecture Notes</a></li>
+                    <li><a class="dropdown-item" href="/lectures?category=slides"><i class="fas fa-file-powerpoint me-2"></i>Presentation Slides</a></li>
+                    <li><a class="dropdown-item" href="/lectures?category=assignments"><i class="fas fa-tasks me-2"></i>Assignments</a></li>
+                </ul>
+            </div>
+        </div>
         <c:if test="${sessionScope.userRole == 'TEACHER'}">
             <a href="/upload" class="btn btn-success">
                 <i class="fas fa-plus me-2"></i> Upload New Lecture
