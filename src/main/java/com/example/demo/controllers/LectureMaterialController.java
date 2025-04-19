@@ -1,14 +1,21 @@
 package com.example.demo.controllers;
 
 import com.example.demo.model.LectureComment;
+import com.example.demo.model.LectureDTO;
 import com.example.demo.model.LectureMaterial;
 import com.example.demo.model.User;
 import com.example.demo.repository.LectureCommentRepository;
 import com.example.demo.repository.LectureMaterialRepository;
 import com.example.demo.repository.UserRepository;
+import com.google.gson.Gson;
 import jakarta.annotation.security.RolesAllowed;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -23,8 +30,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class LectureMaterialController {
@@ -167,4 +173,19 @@ public class LectureMaterialController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/getLectures")
+    public ResponseEntity<List<LectureDTO>> getLectures(@RequestParam("userID") int userID) {
+        List<Object[]> results = lecturerepo.findLecturesByUserId(userID);
+
+        List<LectureDTO> lectures = new ArrayList<>();
+        for (Object[] row : results) {
+            String code = (String) row[0];
+            String name = (String) row[1];
+            lectures.add(new LectureDTO(code, name));
+        }
+
+        return ResponseEntity.ok(lectures);
+    }
+
 }
