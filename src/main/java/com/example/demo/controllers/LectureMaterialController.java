@@ -46,30 +46,52 @@ public class LectureMaterialController {
     }
     @GetMapping("/lectures/{id}")
     public String viewLectureDetail(@PathVariable Long id, Model model) {
-        LectureMaterial lecture = lecturerepo.findById(id).orElseThrow();
+        Optional<LectureMaterial> lectureOpt = lecturerepo.findById(id);
+        if (!lectureOpt.isPresent()) {
+            model.addAttribute("error", "Lecture not found!");
+            return "errorPage";  // A custom error page you can create
+        }
+        LectureMaterial lecture = lectureOpt.get();
         List<LectureComment> comments = lectureCommentRepo.findByLectureMaterial(lecture);
-
-        model.addAttribute("lectures", lecture);
         model.addAttribute("comments", comments);
         model.addAttribute("newComment", new LectureComment());
-        return "lectureDetail"; // Make this JSP page
+        return "lectureDetail";
     }
+
     @PostMapping("/lectures/{id}/comment")
     public String postComment(@PathVariable Long id,
                               @RequestParam("content") String content,
-                              Principal principal) {
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes) {
+
+        // Retrieve the user details from the session
+        String email = (String) session.getAttribute("userEmail");
+
+        if (email == null) {
+            redirectAttributes.addFlashAttribute("message", "You must be logged in to comment.");
+            return "redirect:/login";
+        }
+
+        String userName = (String) session.getAttribute("userName");  // Getting the userName from session
+        User user = userRepo.findByEmail(email);  // Retrieve user from DB based on email
+
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("message", "User not found.");
+            return "redirect:/login";
+        }
+
         LectureMaterial lecture = lecturerepo.findById(id).orElseThrow();
-        String email = principal.getName();
-        System.out.println("User logged in: " + email);
-        User user = userRepo.findByEmail(email).orElseThrow();
+
+        // Create and save the comment
         LectureComment comment = new LectureComment();
         comment.setContent(content);
-        comment.setUser(user);
+        comment.setUser(user);  // Set the User object (not just the username)
         comment.setLectureMaterial(lecture);
         comment.setCreatedAt(java.time.LocalDateTime.now());
 
         lectureCommentRepo.save(comment);
-        return "redirect:/lectures/" + id;
+
+        return "redirect:/lectures/" + id;  // Redirect to the lecture details page
     }
 
     @GetMapping("/upload")

@@ -1,4 +1,4 @@
-<<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
 <html>
@@ -29,70 +29,69 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">MUHK</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
-                <ul class="navbar-nav" id="navMenu"></ul>
-                <div class="d-flex align-items-center">
-                    <button id="authButton" class="btn btn-outline-success"></button>
-                </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">MUHK</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
+            <ul class="navbar-nav" id="navMenu"></ul>
+            <div class="d-flex align-items-center">
+                <button id="authButton" class="btn btn-outline-success"></button>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Main content container -->
-    <div class="container mt-5">
-        <!-- Lecture Info -->
-        <p class="card-text text-muted">
-            Uploaded at: <fmt:formatDate value="${lecture.createdAt}" pattern="yyyy-MM-dd HH:mm" />
-        </p>
+<!-- Main content container -->
+<div class="container mt-5">
+    <!-- Lecture Info -->
+    <p class="card-text text-muted">
+        Uploaded at: <fmt:formatDate value="${lecture.createdAt}" pattern="yyyy-MM-dd HH:mm" />
+    </p>
 
-        <!-- Comments List -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h3 class="card-title">🗨 Comments</h3>
-                <ul class="list-group list-group-flush">
-                    <c:forEach var="comment" items="${comments}">
-                        <li class="list-group-item">
-                            <strong>${comment.user.name}</strong>: ${comment.content}<br/>
-                            <small class="text-muted">${comment.createdAt}</small>
-                        </li>
-                    </c:forEach>
-                </ul>
-            </div>
-        </div>
+    <!-- Comments List -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h3 class="card-title">🗨 Comments</h3>
+            <ul class="list-group list-group-flush">
+                <c:forEach var="comment" items="${comments}">
+                    <li class="list-group-item">
+                        <strong>${comment.user != null ? comment.user.name : "Unknown User"}</strong>: ${comment.content}<br/>
+                        <small>Posted at: ${comment.createdAt}</small>
+                    </li>
+                </c:forEach>
 
-        <!-- Comment Form -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h3 class="card-title">➕ Add a Comment</h3>
-                <!-- ✅ FIXED FORM ACTION -->
-                <form method="post" action="/lectures/${lecture.id}/comment">
-                    <div class="mb-3">
-                        <textarea name="content" class="form-control" rows="3" required placeholder="Write your comment here..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-success">Post Comment</button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Back to list -->
-        <div class="mt-3">
-            <a href="/lectures" class="btn btn-outline-secondary">← Back to Lecture List</a>
+            </ul>
         </div>
     </div>
 
+    <!-- Comment Form -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="card-title">➕ Add a Comment</h3>
+            <!-- ✅ FIXED FORM ACTION -->
+            <form method="post" action="/lectures/${id}/comment">
+            <div class="mb-3">
+                    <textarea name="content" class="form-control" rows="3" required placeholder="Write your comment here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-success">Post Comment</button>
+            </form>
+        </div>
+    </div>
 
+    <!-- Back to list -->
+    <div class="mt-3">
+        <a href="/lectures" class="btn btn-outline-secondary">← Back to Lecture List</a>
+    </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
     document.addEventListener("DOMContentLoaded", function () {
         const userId = '<%= session.getAttribute("userId") %>';
         const user = localStorage.getItem("user") || (userId && userId !== 'null');
