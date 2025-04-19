@@ -1,13 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poll: ${poll.question}</title>
+    <title>投票: ${poll.question}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
     <style>
         body {
             min-height: 75rem;
@@ -67,11 +68,11 @@
                 <div class="d-flex align-items-center">
                     <div class="dropdown me-2">
                         <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-globe"></i> Language
+                            <i class="bi bi-globe"></i> 語言
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                            <li><a class="dropdown-item active" href="/polls/${poll.id}">English</a></li>
-                            <li><a class="dropdown-item" href="/polls/${poll.id}/zh">中文</a></li>
+                            <li><a class="dropdown-item" href="/polls/${poll.id}">English</a></li>
+                            <li><a class="dropdown-item active" href="/polls/${poll.id}/zh">中文</a></li>
                         </ul>
                     </div>
                     <button id="authButton" class="btn btn-outline-success"></button>
@@ -81,22 +82,21 @@
     </nav>
 
     <div class="container mt-4">
-       
         
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
                 <div class="d-flex justify-content-between align-items-center">
                     <h1 class="h3 mb-0">${poll.question}</h1>
                     <c:if test="${isTeacher == true}">
-                        <form action="/polls/${poll.id}/delete" method="post" onsubmit="return confirm('Are you sure you want to delete this poll? This action cannot be undone.');">
-                            <button type="submit" class="btn btn-sm btn-danger">Delete Poll</button>
+                        <form action="/polls/${poll.id}/delete_zh" method="post" onsubmit="return confirm('你確定要刪除此投票嗎？此動作無法撤銷。');">
+                            <button type="submit" class="btn btn-sm btn-danger">刪除投票</button>
                         </form>
                     </c:if>
                 </div>
             </div>
             <div class="card-body">
                 <!-- Poll Options -->
-                <form action="/polls/${poll.id}/vote" method="post" id="voteForm">
+                <form action="/polls/${poll.id}/vote_zh" method="post" id="voteForm">
                     <c:forEach items="${poll.options}" var="option">
                         <div class="poll-option ${userVote == option.id ? 'selected' : ''}" onclick="selectOption(${option.id})">
                             <div class="d-flex justify-content-between align-items-center">
@@ -105,7 +105,7 @@
                                         ${userVote == option.id ? 'checked' : ''} style="margin-right: 10px;">
                                     <label for="option_${option.id}" class="form-check-label">${option.optionText}</label>
                                 </div>
-                                <div class="text-muted">${option.voteCount} votes</div>
+                                <div class="text-muted">${option.voteCount} 票</div>
                             </div>
                             <div class="progress mt-2">
                                 <div class="progress-bar" role="progressbar" 
@@ -121,30 +121,30 @@
                     </c:forEach>
                     
                     <c:if test="${user != null}">
-                        <button type="submit" class="btn btn-primary mt-3">Vote</button>
+                        <button type="submit" class="btn btn-primary mt-3">投票</button>
                     </c:if>
                     <c:if test="${user == null}">
                         <div class="alert alert-info mt-3">
-                            Please <a href="/login">login</a> to vote in this poll.
+                            請<a href="/login_zh">登錄</a>參與此投票。
                         </div>
                     </c:if>
                 </form>
                 
                 <!-- Comments Section -->
                 <div class="mt-5">
-                    <h3>Comments</h3>
+                    <h3>評論</h3>
                     
                     <c:if test="${user != null}">
-                        <form action="/polls/${poll.id}/comment" method="post" class="mb-4">
+                        <form action="/polls/${poll.id}/comment_zh" method="post" class="mb-4">
                             <div class="form-group">
-                                <textarea name="content" class="form-control" rows="3" placeholder="Add your comment here" required></textarea>
+                                <textarea name="content" class="form-control" rows="3" placeholder="在此添加你的評論" required></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+                            <button type="submit" class="btn btn-primary mt-2">發表評論</button>
                         </form>
                     </c:if>
                     
                     <c:if test="${comments.isEmpty()}">
-                        <p class="text-muted">No comments yet. Be the first to comment!</p>
+                        <p class="text-muted">暫無評論。成為第一個評論的人！</p>
                     </c:if>
                     
                     <div class="comments-list">
@@ -154,7 +154,7 @@
                                     <div>
                                         <strong>${comment.user.name}</strong>
                                         <c:if test="${comment.user.role == 'TEACHER'}">
-                                            <span class="badge bg-primary">Teacher</span>
+                                            <span class="badge bg-primary">教師</span>
                                         </c:if>
                                     </div>
                                     <small class="text-muted">${comment.createdAt}</small>
@@ -190,27 +190,27 @@
 
             if (user) {
                 navMenu.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/lectures">Course Material</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/polls">Polls</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/index_zh">首頁</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/lectures_zh">課程資料</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/polls/zh">投票</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/personal-info_zh">個人資料</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/comments_zh">評論</a></li>
                 `;
-                authButton.textContent = "Logout";
+                authButton.textContent = "登出";
                 authButton.classList.add("btn-danger");
                 authButton.addEventListener("click", function () {
                     localStorage.removeItem("user");
-                    window.location.href = "/login";
+                    window.location.href = "/login_zh";
                 });
             } else {
                 navMenu.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/polls">Polls</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/index_zh">首頁</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/polls/zh">投票</a></li>
                 `;
-                authButton.textContent = "Login";
+                authButton.textContent = "登錄";
                 authButton.classList.add("btn-success");
                 authButton.addEventListener("click", function () {
-                    window.location.href = "/login";
+                    window.location.href = "/login_zh";
                 });
             }
         });

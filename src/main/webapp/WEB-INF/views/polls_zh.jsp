@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Polls</title>
+    <title>投票</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
@@ -44,11 +44,11 @@
                 <div class="d-flex align-items-center">
                     <div class="dropdown me-2">
                         <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-globe"></i> Language
+                            <i class="bi bi-globe"></i> 語言
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                            <li><a class="dropdown-item active" href="/polls">English</a></li>
-                            <li><a class="dropdown-item" href="/polls/zh">中文</a></li>
+                            <li><a class="dropdown-item" href="/polls">English</a></li>
+                            <li><a class="dropdown-item active" href="/polls/zh">中文</a></li>
                         </ul>
                     </div>
                     <button id="authButton" class="btn btn-outline-success"></button>
@@ -58,18 +58,17 @@
     </nav>
 
     <div class="container mt-4">
-       
         
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1>Polls</h1>
+            <h1>投票</h1>
             <c:if test="${sessionScope.userId != null && sessionScope.userRole == 'TEACHER'}">
-                <a href="/polls/create" class="btn btn-primary">Create New Poll</a>
+                <a href="/polls/create_zh" class="btn btn-primary">建立新投票</a>
             </c:if>
         </div>
         
         <c:if test="${polls.isEmpty()}">
             <div class="alert alert-info">
-                No polls available at the moment.
+                目前沒有任何投票。
             </div>
         </c:if>
         
@@ -80,13 +79,13 @@
                         <div class="card-body">
                             <h5 class="card-title">${poll.question}</h5>
                             <p class="card-text text-muted">
-                                ${poll.options.size()} options • 
-                                ${poll.options.stream().map(o -> o.getVoteCount()).sum()} votes
+                                ${poll.options.size()} 個選項 • 
+                                ${poll.options.stream().map(o -> o.getVoteCount()).sum()} 票
                             </p>
                         </div>
                         <div class="card-footer bg-transparent border-top-0">
-                            <a href="/polls/${poll.id}" class="btn btn-outline-primary stretched-link">
-                                View Poll
+                            <a href="/polls/${poll.id}/zh" class="btn btn-outline-primary stretched-link">
+                                查看投票
                             </a>
                         </div>
                     </div>
@@ -105,27 +104,27 @@
 
             if (user) {
                 navMenu.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/lectures">Course Material</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/polls">Polls</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/index_zh">首頁</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/lectures_zh">課程資料</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/polls/zh">投票</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/personal-info_zh">個人資料</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/comments_zh">評論</a></li>
                 `;
-                authButton.textContent = "Logout";
+                authButton.textContent = "登出";
                 authButton.classList.add("btn-danger");
                 authButton.addEventListener("click", function () {
                     localStorage.removeItem("user");
-                    window.location.href = "/login";
+                    window.location.href = "/login_zh";
                 });
             } else {
                 navMenu.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/polls">Polls</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/index_zh">首頁</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/polls/zh">投票</a></li>
                 `;
-                authButton.textContent = "Login";
+                authButton.textContent = "登錄";
                 authButton.classList.add("btn-success");
                 authButton.addEventListener("click", function () {
-                    window.location.href = "/login";
+                    window.location.href = "/login_zh";
                 });
             }
         });

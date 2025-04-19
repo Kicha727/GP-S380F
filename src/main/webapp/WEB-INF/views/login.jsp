@@ -9,6 +9,7 @@
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <!-- Inline CSS from sign-in.css -->
     <style>
@@ -67,7 +68,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">MUHK</a>
+            <a class="navbar-brand" href="#">HKMU</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarCollapse" aria-controls="navbarCollapse"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +77,15 @@
             <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
                 <ul class="navbar-nav" id="navMenu"></ul>
                 <div class="d-flex align-items-center">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-globe"></i> Language
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                            <li><a class="dropdown-item active" href="/login">English</a></li>
+                            <li><a class="dropdown-item" href="/login_zh">中文</a></li>
+                        </ul>
+                    </div>
                     <button id="authButton" class="btn btn-outline-success"></button>
                 </div>
             </div>

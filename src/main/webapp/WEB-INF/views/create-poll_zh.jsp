@@ -5,9 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create New Poll</title>
+    <title>創建投票</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <style>
         body {
@@ -45,11 +44,11 @@
                 <div class="d-flex align-items-center">
                     <div class="dropdown me-2">
                         <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-globe"></i> Language
+                            <i class="bi bi-globe"></i>   語言
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                            <li><a class="dropdown-item active" href="/polls/create">English</a></li>
-                            <li><a class="dropdown-item" href="/polls/create_zh">中文</a></li>
+                            <li><a class="dropdown-item" href="/create-poll">English</a></li>
+                            <li><a class="dropdown-item active" href="/create-poll_zh">中文</a></li>
                         </ul>
                     </div>
                     <button id="authButton" class="btn btn-outline-success"></button>
@@ -59,53 +58,53 @@
     </nav>
 
     <div class="container mt-4">
-        
+      
         
         <div class="card shadow">
             <div class="card-header bg-primary text-white">
-                <h1 class="h3 mb-0">Create New Poll</h1>
+                <h1 class="h3 mb-0">建立新投票</h1>
             </div>
             <div class="card-body">
-                <form action="/polls/create" method="post">
+                <form action="/polls/create_zh" method="post">
                     <div class="mb-3">
-                        <label for="question" class="form-label">Poll Question</label>
+                        <label for="question" class="form-label">投票問題</label>
                         <input type="text" class="form-control" id="question" name="question" 
-                               placeholder="Enter your poll question" required>
-                        <div class="form-text">Example: "When would you prefer to have the midterm exam?"</div>
+                               placeholder="填入投票問題" required>
+                        <div class="form-text">例如："你會在什麼時候舉行期中考試？"</div>
                     </div>
                     
                     <div class="mb-3">
-                        <label class="form-label">Poll Options</label>
-                        <p class="form-text mb-2">You must provide exactly 4 options for your poll.</p>
+                        <label class="form-label">投票選項</label>
+                        <p class="form-text mb-2">您必須提供4個選項。</p>
                         
                         <div class="input-group mb-2">
                             <span class="input-group-text">1</span>
                             <input type="text" class="form-control" name="option1" 
-                                   placeholder="Option 1" required>
+                                   placeholder="選項 1" required>
                         </div>
                         
                         <div class="input-group mb-2">
                             <span class="input-group-text">2</span>
                             <input type="text" class="form-control" name="option2" 
-                                   placeholder="Option 2" required>
+                                   placeholder="選項 2" required>
                         </div>
                         
                         <div class="input-group mb-2">
                             <span class="input-group-text">3</span>
                             <input type="text" class="form-control" name="option3" 
-                                   placeholder="Option 3" required>
+                                   placeholder="選項 3" required>
                         </div>
                         
                         <div class="input-group mb-2">
                             <span class="input-group-text">4</span>
                             <input type="text" class="form-control" name="option4" 
-                                   placeholder="Option 4" required>
+                                   placeholder="選項 4" required>
                         </div>
                     </div>
                     
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="/polls" class="btn btn-outline-secondary me-md-2">Cancel</a>
-                        <button type="submit" class="btn btn-primary">Create Poll</button>
+                        <a href="/polls/zh" class="btn btn-outline-secondary me-md-2">取消</a>
+                        <button type="submit" class="btn btn-primary">建立投票</button>
                     </div>
                 </form>
             </div>
@@ -122,13 +121,13 @@
 
             if (user) {
                 navMenu.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/lectures">Course Material</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/polls">Polls</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/comments">Comments</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/index_zh">首頁</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/lectures_zh">課程資料</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/polls/zh">投票</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/personal-info/zh">個人資料</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/comments_zh">評論</a></li>
                 `;
-                authButton.textContent = "Logout";
+                authButton.textContent = "登出";
                 authButton.classList.add("btn-danger");
                 authButton.addEventListener("click", function () {
                     localStorage.removeItem("user");
@@ -136,13 +135,13 @@
                 });
             } else {
                 navMenu.innerHTML = `
-                    <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" href="/polls">Polls</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/index_zh">首頁</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="/polls_zh">投票</a></li>
                 `;
-                authButton.textContent = "Login";
+                authButton.textContent = "登錄";
                 authButton.classList.add("btn-success");
                 authButton.addEventListener("click", function () {
-                    window.location.href = "/login";
+                    window.location.href = "/login_zh";
                 });
             }
         });

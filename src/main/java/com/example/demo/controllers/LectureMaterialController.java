@@ -44,6 +44,14 @@ public class LectureMaterialController {
         model.addAttribute("lectureMaterials", lectureMaterials);
         return "lecturelist";
     }
+    
+    @GetMapping("/lectures_zh")
+    public String lectureMaterialChinese(Model model) {
+        List<LectureMaterial> lectureMaterials = lecturerepo.findAll();
+        model.addAttribute("lectureMaterials", lectureMaterials);
+        return "lecturelist_zh";
+    }
+    
     @GetMapping("/lectures/{id}")
     public String viewLectureDetail(@PathVariable Long id, Model model) {
         Optional<LectureMaterial> lectureOpt = lecturerepo.findById(id);
@@ -55,7 +63,23 @@ public class LectureMaterialController {
         List<LectureComment> comments = lectureCommentRepo.findByLectureMaterial(lecture);
         model.addAttribute("comments", comments);
         model.addAttribute("newComment", new LectureComment());
+        model.addAttribute("id", id);
         return "lectureDetail";
+    }
+    
+    @GetMapping("/lectures_zh/{id}")
+    public String viewLectureDetailChinese(@PathVariable Long id, Model model) {
+        Optional<LectureMaterial> lectureOpt = lecturerepo.findById(id);
+        if (!lectureOpt.isPresent()) {
+            model.addAttribute("error", "課程未找到");
+            return "errorPage";  // A custom error page you can create
+        }
+        LectureMaterial lecture = lectureOpt.get();
+        List<LectureComment> comments = lectureCommentRepo.findByLectureMaterial(lecture);
+        model.addAttribute("comments", comments);
+        model.addAttribute("newComment", new LectureComment());
+        model.addAttribute("id", id);
+        return "lectureDetail_zh";
     }
 
     @PostMapping("/lectures/{id}/comment")
@@ -92,6 +116,42 @@ public class LectureMaterialController {
         lectureCommentRepo.save(comment);
 
         return "redirect:/lectures/" + id;  // Redirect to the lecture details page
+    }
+
+    @PostMapping("/lectures/{id}/comment_zh")
+    public String postCommentZh(@PathVariable Long id,
+                              @RequestParam("content") String content,
+                              HttpSession session,
+                              RedirectAttributes redirectAttributes) {
+
+        // Retrieve the user details from the session
+        String email = (String) session.getAttribute("userEmail");
+
+        if (email == null) {
+            redirectAttributes.addFlashAttribute("message", "You must be logged in to comment.");
+            return "redirect:/login";
+        }
+
+        String userName = (String) session.getAttribute("userName");  // Getting the userName from session
+        User user = userRepo.findByEmail(email);  // Retrieve user from DB based on email
+
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("message", "User not found.");
+            return "redirect:/login";
+        }
+
+        LectureMaterial lecture = lecturerepo.findById(id).orElseThrow();
+
+        // Create and save the comment
+        LectureComment comment = new LectureComment();
+        comment.setContent(content);
+        comment.setUser(user);  // Set the User object (not just the username)
+        comment.setLectureMaterial(lecture);
+        comment.setCreatedAt(java.time.LocalDateTime.now());
+
+        lectureCommentRepo.save(comment);
+
+        return "redirect:/lectures_zh/" + id;  // Redirect to the lecture details page
     }
 
     @GetMapping("/upload")
@@ -151,6 +211,26 @@ public class LectureMaterialController {
             redirectAttributes.addFlashAttribute("error", "Lecture not found.");
         }
         return "redirect:/lectures";
+    }
+
+    @PostMapping("/lectures/{id}/delete_zh")
+    @RolesAllowed("TEACHER")
+    public String deleteLectureZh(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        Optional<LectureMaterial> lectureOpt = lecturerepo.findById(id);
+        if (lectureOpt.isPresent()) {
+            // Manually delete all associated comments first
+            List<LectureComment> comments = lectureCommentRepo.findByLectureMaterialId(id);
+            if (!comments.isEmpty()) {
+                lectureCommentRepo.deleteAll(comments);  // Delete all comments associated with the lecture
+            }
+
+            // Then delete the lecture material
+            lecturerepo.deleteById(id);
+            redirectAttributes.addFlashAttribute("message", "Lecture deleted successfully!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Lecture not found.");
+        }
+        return "redirect:/lectures_zh";
     }
 
 
