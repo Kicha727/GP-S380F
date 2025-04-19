@@ -324,33 +324,76 @@
         <div class="container">
             <h1 class="hero-title">Welcome to MUHK</h1>
             <p class="hero-subtitle">Modern University of Hong Kong - Where Innovation Meets Education</p>
-            <a href="/lectures" class="btn btn-light hero-button">Explore Courses <i class="fas fa-arrow-right ms-2"></i></a>
+
+            <c:choose>
+                <c:when test="${empty sessionScope.userId}">
+                    <a href="/login" class="btn btn-light hero-button">
+                        <i class="fas fa-lock me-2"></i> Login to Explore Courses
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a href="/lectures" class="btn btn-light hero-button">
+                        Explore Courses <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </c:otherwise>
+            </c:choose>
         </div>
     </section>
 
     <!-- Lecture Section -->
     <section class="my-5">
         <div class="container">
-            <h2 class="section-title mb-4">YOUR LECTURE</h2>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title">YOUR LECTURE</h2>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.userId}">
+                    <span class="badge bg-primary p-2">
+                        <i class="fas fa-graduation-cap me-1"></i> Course:
+                        <c:choose>
+                            <c:when test="${not empty sessionScope.course}">
+                                ${sessionScope.course}
+                            </c:when>
+                            <c:otherwise>
+                                <span id="courseDisplayText">Loading...</span>
+                            </c:otherwise>
+                        </c:choose>
+                    </span>
+                    </c:when>
+                    <c:otherwise>
+                    <span class="badge bg-secondary p-2">
+                        <i class="fas fa-lock me-1"></i> Login to view course
+                    </span>
+                    </c:otherwise>
+                </c:choose>
+            </div>
             <div id="lectureContainer" class="horizontal-scroll d-flex flex-nowrap overflow-auto gap-4"></div>
         </div>
     </section>
-
 
     <!-- Recent Polls Section -->
     <section class="my-5">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="section-title">Recent Polls</h2>
-                <a href="/polls" class="btn btn-outline-primary">View All Polls</a>
+
+                <c:choose>
+                    <c:when test="${empty sessionScope.userId}">
+                        <button class="btn btn-outline-secondary" disabled>
+                            <i class="fas fa-lock me-2"></i> Login to View Polls
+                        </button>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="/polls" class="btn btn-outline-primary">View All Polls</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
-            
+
             <c:if test="${recentPolls.isEmpty()}">
                 <div class="alert alert-info">
                     <i class="fas fa-info-circle me-2"></i>No polls available at the moment.
                 </div>
             </c:if>
-            
+
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <c:forEach items="${recentPolls}" var="poll" begin="0" end="3">
                     <div class="col">
@@ -358,14 +401,23 @@
                             <div class="card-body">
                                 <h5 class="card-title">${poll.question}</h5>
                                 <p class="card-text text-muted">
-                                    <i class="fas fa-list-ul me-2"></i>${poll.options.size()} options • 
+                                    <i class="fas fa-list-ul me-2"></i>${poll.options.size()} options •
                                     <i class="fas fa-vote-yea me-2"></i>${poll.options.stream().map(o -> o.getVoteCount()).sum()} votes
                                 </p>
                             </div>
                             <div class="card-footer bg-transparent border-top-0">
-                                <a href="/polls/${poll.id}" class="btn btn-outline-primary">
-                                    View Poll <i class="fas fa-arrow-right ms-2"></i>
-                                </a>
+                                <c:choose>
+                                    <c:when test="${empty sessionScope.userId}">
+                                        <a href="/login" class="btn btn-outline-secondary">
+                                            <i class="fas fa-lock me-2"></i> Login to View
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="/polls/${poll.id}" class="btn btn-outline-primary">
+                                            View Poll <i class="fas fa-arrow-right ms-2"></i>
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
                             </div>
                         </div>
                     </div>
@@ -374,53 +426,6 @@
         </div>
     </section>
 </main>
-
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-4 mb-4">
-                <h4 class="footer-title">About MUHK</h4>
-                <p>Modern University of Hong Kong is dedicated to providing quality education and innovative research opportunities to students from around the world.</p>
-            </div>
-            <div class="col-lg-2 col-md-4 mb-4">
-                <h4 class="footer-title">Links</h4>
-                <ul class="footer-links">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/course">Courses</a></li>
-                    <li><a href="/polls">Polls</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-2 col-md-4 mb-4">
-                <h4 class="footer-title">Resources</h4>
-                <ul class="footer-links">
-                    <li><a href="#">Library</a></li>
-                    <li><a href="#">Research</a></li>
-                    <li><a href="#">Academic Calendar</a></li>
-                    <li><a href="#">Student Portal</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-4 col-md-4 mb-4">
-                <h4 class="footer-title">Contact Us</h4>
-                <ul class="footer-links">
-                    <li><i class="fas fa-map-marker-alt me-2"></i> 123 Education Road, Hong Kong</li>
-                    <li><i class="fas fa-phone me-2"></i> (852) 1234-5678</li>
-                    <li><i class="fas fa-envelope me-2"></i> info@muhk.edu</li>
-                </ul>
-                <div class="mt-3">
-                    <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-                    <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p class="mb-0">© 2025 Modern University of Hong Kong. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
 
 <!-- Bootstrap Bundle -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -435,12 +440,12 @@
 
         if (user) {
             navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link active" href="/"><i class="fas fa-home me-1"></i> Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="/lectures"><i class="fas fa-book me-1"></i> Course Materials</a></li>
-                <li class="nav-item"><a class="nav-link" href="/polls"><i class="fas fa-poll me-1"></i> Polls</a></li>
-                <li class="nav-item"><a class="nav-link" href="/personal-info"><i class="fas fa-user me-1"></i> Personal Info</a></li>
-                <li class="nav-item"><a class="nav-link" href="/comments"><i class="fas fa-comments me-1"></i> Comments</a></li>
-            `;
+            <li class="nav-item"><a class="nav-link active" href="/"><i class="fas fa-home me-1"></i> Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/lectures"><i class="fas fa-book me-1"></i> Course Materials</a></li>
+            <li class="nav-item"><a class="nav-link" href="/polls"><i class="fas fa-poll me-1"></i> Polls</a></li>
+            <li class="nav-item"><a class="nav-link" href="/personal-info"><i class="fas fa-user me-1"></i> Personal Info</a></li>
+            <li class="nav-item"><a class="nav-link" href="/comments"><i class="fas fa-comments me-1"></i> Comments</a></li>
+        `;
             authButton.textContent = "Logout";
             authButton.classList.add("btn-danger");
             authButton.addEventListener("click", function () {
@@ -449,8 +454,8 @@
             });
         } else {
             navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link active" href="/"><i class="fas fa-home me-1"></i> Home</a></li>
-            `;
+            <li class="nav-item"><a class="nav-link active" href="/"><i class="fas fa-home me-1"></i> Home</a></li>
+        `;
             authButton.textContent = "Login";
             authButton.classList.add("btn-success");
             authButton.addEventListener("click", function () {
@@ -511,20 +516,83 @@
 
                         container.appendChild(card);
 
-
                         if (!lecture.code || !lecture.name) {
                             console.warn(`⚠️ Missing data in lecture #${index + 1}:`, lecture);
                         }
-
-                        container.appendChild(card);
                     });
 
                     if (data.length === 0) {
                         console.info("ℹ️ No lectures found for this user.");
                     }
+
+                    updateCourseDisplay(data);
                 })
                 .catch(err => console.error("💥 Failed to load lectures:", err));
         }
+
+        // unified all couse
+        function updateCourseDisplay(lectureData) {
+            const courseDisplayText = document.getElementById("courseDisplayText");
+            if (!courseDisplayText) return;
+
+            // API check user info
+            fetch('/users/current')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch user data');
+                    }
+                    return response.json();
+                })
+                .then(userData => {
+                    // use user info to show the course name
+                    if (userData && userData.course) {
+                        courseDisplayText.textContent = userData.course;
+                        console.log("✅ Course name set from API:", userData.course);
+                    } else {
+                        fallbackToCourseCode(lectureData);
+                    }
+                })
+                .catch(error => {
+                    console.error("❌ Error fetching user data:", error);
+                    // if false
+                    fallbackToCourseCode(lectureData);
+                });
+        }
+
+        // Use course id to the course name
+        function fallbackToCourseCode(lectureData) {
+            const courseDisplayText = document.getElementById("courseDisplayText");
+            if (!courseDisplayText) return;
+
+            if (Array.isArray(lectureData) && lectureData.length > 0 && lectureData[0].code) {
+                courseDisplayText.textContent = lectureData[0].code;
+                console.log("ℹ️ Using lecture code as course name:", lectureData[0].code);
+            } else {
+                const lectureContainer = document.getElementById('lectureContainer');
+                if (lectureContainer && lectureContainer.children.length > 0) {
+                    const firstLectureTitle = lectureContainer.querySelector('.feature-title');
+                    if (firstLectureTitle) {
+                        courseDisplayText.textContent = firstLectureTitle.textContent;
+                        console.log("ℹ️ Using DOM lecture title as course name:", firstLectureTitle.textContent);
+                    } else {
+                        courseDisplayText.textContent = 'Not Available';
+                        console.warn("⚠️ No lecture title found in DOM");
+                    }
+                } else {
+                    courseDisplayText.textContent = 'Not Enrolled';
+                    console.warn("⚠️ No lectures available");
+                }
+            }
+        }
+
+        // Double check is that null
+        setTimeout(function() {
+            const courseDisplayText = document.getElementById("courseDisplayText");
+            if (courseDisplayText && courseDisplayText.textContent === 'Loading...') {
+                console.log("🕒 Timeout reached, using fallback...");
+                fallbackToCourseCode([]);
+            }
+        }, 3000); // loading at least 3s
     });
 </script>
 </body>
