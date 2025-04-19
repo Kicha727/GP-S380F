@@ -329,7 +329,7 @@
         <div class="container">
             <h1 class="hero-title">Welcome to MUHK</h1>
             <p class="hero-subtitle">Modern University of Hong Kong - Where Innovation Meets Education</p>
-            <a href="/course" class="btn btn-light hero-button">Explore Courses <i class="fas fa-arrow-right ms-2"></i></a>
+            <a href="/lectures" class="btn btn-light hero-button">Explore Courses <i class="fas fa-arrow-right ms-2"></i></a>
         </div>
     </section>
 
