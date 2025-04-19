@@ -137,9 +137,9 @@
 <!-- Main Content -->
 <main class="container">
     <div class="bg-body-tertiary p-5 rounded">
-        <h1>Navbar Example</h1>
-        <p class="lead">This example illustrates how a fixed-top navbar works. As you scroll, it remains at the top of the browser viewport.</p>
-        <a class="btn btn-lg btn-primary" href="https://getbootstrap.com/docs/5.3/components/navbar/" role="button">View Navbar Docs &raquo;</a>
+        <h1>Welecome to MUMK</h1>
+        <p class="lead">The Metropolitan University of Hong Kong was established by the government in 1989 to provide distance education and full-time courses in 2001. After years of hard work, Metropolitan University's open and flexible education courses have taken a leading position in the Asia-Pacific region. At the same time, the full-time courses we provide to qualified secondary school graduates are comparable to other large universities in Hong Kong. Today, Metropolitan University is a young, vibrant and well-rounded university of high quality.</p>
+        <a class="btn btn-lg btn-primary" href="https://www.hkmu.edu.hk/tc/" role="button">More About MUHK &raquo;</a>
     </div>
     
     <!-- Recent Polls Section -->
