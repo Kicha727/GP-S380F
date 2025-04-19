@@ -432,9 +432,6 @@
 
                 <c:if test="${sessionScope.userRole == 'TEACHER'}">
                     <div class="teacher-actions">
-                        <a href="/lectures/${lecture.id}/edit" class="btn btn-edit">
-                            <i class="fas fa-edit me-2"></i> Edit Lecture
-                        </a>
                         <button onclick="deleteLecture(${lecture.id})" class="btn btn-delete">
                             <i class="fas fa-trash me-2"></i> Delete Lecture
                         </button>
@@ -481,29 +478,19 @@
     </section>
 
     <!-- Comment Form -->
-    <c:if test="${not empty sessionScope.userId}">
-        <div class="card mb-5">
-            <div class="card-body p-4">
-                <h4 class="card-title mb-3">Add Your Comment</h4>
-                <form method="post" action="/lectures/${lecture.id}/comment">
-                    <div class="mb-3">
-                            <textarea name="content" class="form-control" rows="4" required
-                                      placeholder="Share your thoughts about this lecture..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-paper-plane me-2"></i> Post Comment
-                    </button>
-                </form>
-            </div>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h3 class="card-title">Add a Comment</h3>
+            <form method="post" action="/lectures/${id}/comment">
+                <div class="mb-3">
+                    <textarea name="content" class="form-control" rows="3" required placeholder="Write your comment here..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane me-2"></i> Post Comment
+                </button>
+            </form>
         </div>
-    </c:if>
-
-    <c:if test="${empty sessionScope.userId}">
-        <div class="alert alert-info mb-5" role="alert">
-            <i class="fas fa-info-circle me-2"></i>
-            Please <a href="/login" class="alert-link">login</a> to add your comment to this lecture.
-        </div>
-    </c:if>
+    </div>
 
     <!-- Back Button -->
     <div class="text-center">
