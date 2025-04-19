@@ -246,7 +246,6 @@
                     gender: gender.value
                 };
                 
-                // Send data to server
                 fetch('/users/update', {
                     method: 'PUT',
                     headers: {
