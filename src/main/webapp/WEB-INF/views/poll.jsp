@@ -470,18 +470,6 @@
                     <button id="authButton" class="btn"></button>
                 </div>
             </div>
-                <%
-            String uri = request.getRequestURI();
-            boolean isZh = uri.equals("/zh");
-        %>
-            <div class="dropdown">
-                <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                    語言: 繁體中文
-                </button>
-                <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="<%= request.getContextPath() + "/" %>">English</a></li>
-                    <li><a class="dropdown-item" href="<%= request.getContextPath() + "/zh" %>">繁體中文</a></li>
-                </ul>
         </div>
     </nav>
 
@@ -496,7 +484,16 @@
         
         <div class="card shadow">
             <div class="card-header">
-                <h1 class="h3 mb-0"><i class="fas fa-question-circle me-2"></i>${poll.question}</h1>
+                <div class="d-flex justify-content-between align-items-center">
+                    <h1 class="h3 mb-0"><i class="fas fa-question-circle me-2"></i>${poll.question}</h1>
+                    <c:if test="${isTeacher == true}">
+                        <form action="/polls/${poll.id}/delete" method="post" onsubmit="return confirm('Are you sure you want to delete this poll? This action cannot be undone.');">
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash-alt me-1"></i> Delete Poll
+                            </button>
+                        </form>
+                    </c:if>
+                </div>
             </div>
             <div class="card-body">
                 <!-- Poll Stats -->
