@@ -23,6 +23,13 @@ public class PageController {
         return "index";  // resolves to /WEB-INF/views/index.jsp
     }
 
+    @GetMapping("/zh")
+    public String indexPageZh(Model model) {
+        List<Poll> recentPolls = pollRepository.findAll();
+        model.addAttribute("recentPolls", recentPolls);
+        return "index_zh";  // resolves to /WEB-INF/views/index_zh.jsp
+    }
+
     @GetMapping("/personal-info")
     public String personalInfoPage(HttpSession session) {
         // Check if user is authenticated
