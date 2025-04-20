@@ -7,15 +7,9 @@ import com.example.demo.model.User;
 import com.example.demo.repository.LectureCommentRepository;
 import com.example.demo.repository.LectureMaterialRepository;
 import com.example.demo.repository.UserRepository;
-import com.google.gson.Gson;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,11 +23,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.*;
 
 @Controller
-public class LectureMaterialController {
+public class MaterialController {
 
     @Autowired
     private LectureMaterialRepository lecturerepo;
