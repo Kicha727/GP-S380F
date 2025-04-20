@@ -1,17 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!doctype html>
-<html lang="en" data-bs-theme="auto">
+<html lang="zh" data-bs-theme="auto">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>登錄</title>
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
-    <!-- Inline CSS from register.css -->
+    <!-- Inline CSS from sign-in.css -->
     <style>
         html, body {
             height: 100%;
@@ -22,32 +22,26 @@
             background-color: #f5f5f5;
         }
 
-        .form-register {
-            max-width: 400px;
+        .form-signin {
+            max-width: 330px;
             padding: 1rem;
             margin: 0 auto;
         }
 
-        .form-register .form-floating input,
-        .form-register .form-select {
-            border-radius: 0;
+        .form-signin .form-floating:focus-within {
+            z-index: 2;
+        }
+
+        .form-signin input[type="email"] {
             margin-bottom: -1px;
+            border-bottom-right-radius: 0;
+            border-bottom-left-radius: 0;
         }
 
-        .form-register .form-floating:first-of-type input {
-            border-top-left-radius: 8px;
-            border-top-right-radius: 8px;
-        }
-
-        .form-register .form-floating:last-of-type input,
-        .form-register .form-floating:last-of-type select {
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
+        .form-signin input[type="password"] {
             margin-bottom: 10px;
-        }
-
-        button {
-            border-radius: 6px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
         }
         
         .alert {
@@ -85,11 +79,11 @@
                 <div class="d-flex align-items-center">
                     <div class="dropdown me-2">
                         <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-globe"></i> Language
+                            <i class="bi bi-globe"></i> 語言
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                            <li><a class="dropdown-item active" href="/register">English</a></li>
-                            <li><a class="dropdown-item" href="/register_zh">中文</a></li>
+                            <li><a class="dropdown-item" href="/login">English</a></li>
+                            <li><a class="dropdown-item active" href="/login_zh">中文</a></li>
                         </ul>
                     </div>
                     <button id="authButton" class="btn btn-outline-success"></button>
@@ -98,60 +92,34 @@
         </div>
     </nav>
 
-    <main>
-        <form action="/register" method="post" class="form-register w-100 m-auto">
-            <img class="mb-4" src="https://muhk.edu.hk/wp-content/uploads/2022/04/logo_symbol.png" alt="HKMU Logo" width="72" height="57">
-            <h1 class="h3 mb-3 fw-normal">Create an Account</h1>
+    <main class="form-signin w-100 m-auto">
+        <form action="/login" method="post">
+            <input type="hidden" name="language" value="zh">
+            <h1 class="h3 mb-3 fw-normal">請登錄</h1>
             
             <c:if test="${not empty error}">
                 <div class="alert alert-danger" role="alert">
                     ${error}
                 </div>
             </c:if>
+            
+            <c:if test="${not empty success}">
+                <div class="alert alert-success" role="alert">
+                    ${success}
+                </div>
+            </c:if>
 
             <div class="form-floating">
-                <input type="text" class="form-control" id="name" name="name" placeholder="Full Name" required>
-                <label for="name">Full Name</label>
-            </div>
-            <div class="form-floating">
                 <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com" required>
-                <label for="email">Email address</label>
+                <label for="email">電子郵件</label>
             </div>
             <div class="form-floating">
                 <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
-                <label for="password">Password</label>
-            </div>
-            <div class="form-floating">
-                <input type="tel" class="form-control" id="phone" name="phone" placeholder="Phone Number" required>
-                <label for="phone">Phone Number</label>
-            </div>
-            <div class="form-floating">
-                <input type="text" class="form-control" id="course" name="course" placeholder="Course" required>
-                <label for="course">Course</label>
-            </div>
-            <div class="form-floating">
-                <select class="form-select" id="academicYear" name="academicYear" required>
-                    <option value="">Select Academic Year</option>
-                    <option value="2023-2024">2023-2024</option>
-                    <option value="2024-2025">2024-2025</option>
-                    <option value="2025-2026">2025-2026</option>
-                </select>
-                <label for="academicYear">Academic Year</label>
-            </div>
-            <div class="form-floating">
-                <select class="form-select" id="gender" name="gender" required>
-                    <option value="">Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-                <label for="gender">Gender</label>
+                <label for="password">密碼</label>
             </div>
 
-            <button class="btn btn-primary w-100 py-2 mt-2" type="submit">Register</button>
-
-            <p class="mt-3">Already have an account? <a href="/login">Sign in here</a></p>
-            <p class="mt-5 mb-3 text-body-secondary">2025 HKMU Learning Portal</p>
+            <button class="btn btn-primary w-100 py-2 mt-3" type="submit">登錄</button>
+            <p class="mt-3">還沒有帳戶？ <a href="/register_zh">在此註冊</a></p>
         </form>
     </main>
 
@@ -160,16 +128,17 @@
     <script>
         // Navigation and authentication
         document.addEventListener("DOMContentLoaded", function () {
+            const user = localStorage.getItem("user");
             const navMenu = document.getElementById("navMenu");
             const authButton = document.getElementById("authButton");
 
             navMenu.innerHTML = `
-                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/index_zh">首頁</a></li>
             `;
-            authButton.textContent = "Login";
+            authButton.textContent = "登錄";
             authButton.classList.add("btn-success");
             authButton.addEventListener("click", function () {
-                window.location.href = "/login";
+                window.location.href = "/index_zh";
             });
         });
     </script>

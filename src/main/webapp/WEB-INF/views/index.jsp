@@ -10,6 +10,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <!-- Embedded CSS (from navbar-fixed.css) -->
     <style>
@@ -112,6 +113,15 @@
         <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarCollapse">
             <ul class="navbar-nav" id="navMenu"></ul>
             <div class="d-flex align-items-center">
+                <div class="dropdown me-2">
+                    <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-globe"></i> Language
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="languageDropdown">
+                        <li><a class="dropdown-item active" href="/">English</a></li>
+                        <li><a class="dropdown-item" href="/index_zh">中文</a></li>
+                    </ul>
+                </div>
                 <button id="authButton" class="btn btn-outline-success"></button>
             </div>
         </div>
@@ -121,7 +131,7 @@
 <!-- Main Content -->
 <main class="container">
     <div class="bg-body-tertiary p-5 rounded">
-        <h1>Welecome to MUMK</h1>
+        <h1>Welecome to HKMU</h1>
         <p class="lead">The Metropolitan University of Hong Kong was established by the government in 1989 to provide distance education and full-time courses in 2001. After years of hard work, Metropolitan University's open and flexible education courses have taken a leading position in the Asia-Pacific region. At the same time, the full-time courses we provide to qualified secondary school graduates are comparable to other large universities in Hong Kong. Today, Metropolitan University is a young, vibrant and well-rounded university of high quality.</p>
         <a class="btn btn-lg btn-primary" href="https://www.hkmu.edu.hk/tc/" role="button">More About MUHK &raquo;</a>
     </div>
@@ -191,7 +201,7 @@
         <c:otherwise>
             <!-- Content for non-logged in users -->
             <div class="bg-body-tertiary p-5 rounded">
-                <h1>Welcome to MUHK Learning Portal</h1>
+                <h1>Welcome to HKMU Learning Portal</h1>
                 <p class="lead">Please log in to view your course materials and participate in polls.</p>
                 <a class="btn btn-lg btn-primary" href="/login" role="button">Login</a>
                 <a class="btn btn-lg btn-secondary" href="/register" role="button">Register</a>

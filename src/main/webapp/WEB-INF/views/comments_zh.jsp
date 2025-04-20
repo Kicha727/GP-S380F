@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comments</title>
+    <title>評論</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
@@ -86,11 +86,11 @@
             <div class="d-flex">
                 <div class="dropdown me-2">
                     <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-globe"></i> Language
+                        <i class="bi bi-globe"></i>   語言
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="languageDropdown">
-                        <li><a class="dropdown-item active" href="/">English</a></li>
-                        <li><a class="dropdown-item" href="/comments_zh">中文</a></li>
+                        <li><a class="dropdown-item" href="/">English</a></li>
+                        <li><a class="dropdown-item active" href="/index_zh">中文</a></li>
                     </ul>
                 </div>
                 <button id="authButton" class="btn btn-outline-success"></button>
@@ -101,21 +101,21 @@
 
 <br><br><br>
 <!--Show Comments-->
-<h3>Comments (${comments.size()})</h3>
+<h3>評論 (${comments.size()})</h3>
 <c:if test="${sessionScope.userId == null}">
-    <a>You have to login to view comments. </a>
-    <a href="/login">Login</a>
+    <a>您必須登入才能檢視評論。</a>
+    <a href="/login_zh">登錄</a>
 </c:if>
 
 <c:if test="${sessionScope.userId != null}">
-    <form action="/comments/addComment" method="post" class="mb-4">
+    <form action="/comments/addComment_zh" method="post" class="mb-4">
         <div class="form-group">
-            <textarea name="content" class="form-control" rows="3" placeholder="Add your comment here" required></textarea>
+            <textarea name="content" class="form-control" rows="3" placeholder="留下你的評論" required></textarea>
         </div>
-        <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+        <button type="submit" class="btn btn-primary mt-2">發表評論</button>
     </form>
     <c:if test="${empty comments}">
-        <div class="alert alert-info">No comments yet. Be the first to comment! </div>
+        <div class="alert alert-info">尚未有評論。成為第一個發表評論的人！</div>
     </c:if>
 
 
@@ -127,7 +127,7 @@
                         <div>
                             <strong>${comment.user.name}</strong>
                             <c:if test="${comment.user.role == 'TEACHER'}">
-                                <span class="badge bg-primary text-light">Teacher</span>
+                                <span class="badge bg-primary text-light">講師</span>
                             </c:if>
 
                             <span class="comment-time">
@@ -138,9 +138,9 @@
                     </div>
                     <c:if test="${sessionScope.userRole == 'TEACHER' || sessionScope.userId == comment.user.id}">
                         <div class="comment-actions">
-                            <form action="/comments/delete/${comment.id}" method="post" style="display: inline;">
+                            <form action="/comments/delete_zh/${comment.id}" method="post" style="display: inline;">
                                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</button>
+                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('你確定要刪除這則評論嗎？')">刪除</button>
                             </form>
                         </div>
                     </c:if>
@@ -155,6 +155,7 @@
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
 <script>
     // Navigation and authentication
     document.addEventListener("DOMContentLoaded", function () {
@@ -163,24 +164,24 @@
         const authButton = document.getElementById("authButton");
 
         navMenu.innerHTML = `
-            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-            <li class="nav-item"><a class="nav-link" href="/lectures">Course Material</a></li>
-            <li class="nav-item"><a class="nav-link" href="/polls">Polls</a></li>
-            <li class="nav-item"><a class="nav-link" href="/personal-info">Personal Info</a></li>
-            <li class="nav-item"><a class="nav-link active" href="/comments">Comments</a></li>
+            <li class="nav-item"><a class="nav-link" href="/index_zh">首頁</a></li>
+            <li class="nav-item"><a class="nav-link" href="/lectures_zh">課程資料</a></li>
+            <li class="nav-item"><a class="nav-link" href="/polls/zh">投票</a></li>
+            <li class="nav-item"><a class="nav-link" href="/personal-info_zh">個人資料</a></li>
+            <li class="nav-item"><a class="nav-link active" href="/comments_zh">評論</a></li>
              `;
         if (user) {
-            authButton.textContent = "Logout";
+            authButton.textContent = "登出";
             authButton.classList.add("btn-danger");
             authButton.addEventListener("click", function () {
                 localStorage.removeItem("user");
-                window.location.href = "/login";
+                window.location.href = "/login_zh";
             });
         } else {
-            authButton.textContent = "Login";
+            authButton.textContent = "登錄";
             authButton.classList.add("btn-success");
             authButton.addEventListener("click", function () {
-                window.location.href = "/login";
+                window.location.href = "/login_zh";
             });
         }
     });

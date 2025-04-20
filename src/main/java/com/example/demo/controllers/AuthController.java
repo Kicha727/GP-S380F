@@ -24,16 +24,23 @@ public class AuthController {
         return "login";  // Resolves to /WEB-INF/views/login.jsp
     }
 
+    @GetMapping("/login_zh")
+    public String showLoginFormZh() {
+        return "login_zh";  // Resolves to /WEB-INF/views/login_zh.jsp
+    }
+    
+
     @PostMapping("/login")
     public String processLogin(@RequestParam String email, 
                               @RequestParam String password,
                               HttpSession session,
-                              RedirectAttributes redirectAttributes) {
+                              RedirectAttributes redirectAttributes,
+                              @RequestParam(required = false) String language) {
         User user = userRepository.findByEmail(email);
         
         if (user == null || !user.getPassword().equals(password)) {
             redirectAttributes.addFlashAttribute("error", "Invalid email or password");
-            return "redirect:/login";
+            return "redirect:/login"+ (language != null && language.equals("zh") ? "_zh" : "");
         }
         
         // Store user information in session
@@ -42,12 +49,19 @@ public class AuthController {
         session.setAttribute("userEmail", user.getEmail());
         session.setAttribute("userRole", user.getRole().toString());
         
-        return "redirect:/";
+        return "redirect:/"+ (language != null && language.equals("zh") ? "index_zh" : "");
     }
+
+    
     
     @GetMapping("/register")
     public String showRegisterForm() {
         return "register";  // Resolves to /WEB-INF/views/register.jsp
+    }
+    
+    @GetMapping("/register_zh")
+    public String showRegisterFormZh() {
+        return "register_zh";  // Resolves to /WEB-INF/views/register_zh.jsp
     }
     
     @PostMapping("/register")
