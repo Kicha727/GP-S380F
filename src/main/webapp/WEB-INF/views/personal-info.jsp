@@ -251,6 +251,18 @@
                 <button id="authButton" class="btn"></button>
             </div>
         </div>
+            <%
+            String uri = request.getRequestURI();
+            boolean isZh = uri.equals("/zh");
+        %>
+        <div class="dropdown">
+            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                語言: 繁體中文
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="<%= request.getContextPath() + "/" %>">English</a></li>
+                <li><a class="dropdown-item" href="<%= request.getContextPath() + "/zh" %>">繁體中文</a></li>
+            </ul>
     </div>
 </nav>
 

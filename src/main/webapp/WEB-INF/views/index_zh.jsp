@@ -320,7 +320,7 @@
         %>
         <div class="dropdown">
             <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                語言: <%= isZh ? "繁體中文" : "English" %>
+                語言: 繁體中文
             </button>
             <ul class="dropdown-menu">
                 <li><a class="dropdown-item" href="<%= request.getContextPath() + "/" %>">English</a></li>
